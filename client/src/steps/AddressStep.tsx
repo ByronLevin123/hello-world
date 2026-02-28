@@ -39,44 +39,60 @@ export function AddressStep() {
       title="Where do you live?"
       onBack={() => { setCurrentStep(2); navigate('/personal-details'); }}
     >
-      <form onSubmit={handleSubmit}>
-        <FormField label="Address line 1" error={errors.addressLine1}>
+      <form onSubmit={handleSubmit} noValidate>
+        <FormField label="Address line 1" htmlFor="addressLine1" error={errors.addressLine1}>
           <input
+            id="addressLine1"
             type="text"
             value={formData.addressLine1}
             onChange={e => handleChange('addressLine1', e.target.value)}
+            aria-invalid={!!errors.addressLine1}
+            aria-describedby={errors.addressLine1 ? 'addressLine1-error' : undefined}
+            autoComplete="address-line1"
           />
         </FormField>
 
-        <FormField label="Address line 2 (optional)">
+        <FormField label="Address line 2 (optional)" htmlFor="addressLine2">
           <input
+            id="addressLine2"
             type="text"
             value={formData.addressLine2}
             onChange={e => handleChange('addressLine2', e.target.value)}
+            autoComplete="address-line2"
           />
         </FormField>
 
-        <FormField label="Town / City" error={errors.city}>
+        <FormField label="Town / City" htmlFor="city" error={errors.city}>
           <input
+            id="city"
             type="text"
             value={formData.city}
             onChange={e => handleChange('city', e.target.value)}
+            aria-invalid={!!errors.city}
+            aria-describedby={errors.city ? 'city-error' : undefined}
+            autoComplete="address-level2"
           />
         </FormField>
 
-        <FormField label="County (optional)">
+        <FormField label="County (optional)" htmlFor="county">
           <input
+            id="county"
             type="text"
             value={formData.county}
             onChange={e => handleChange('county', e.target.value)}
+            autoComplete="address-level1"
           />
         </FormField>
 
-        <FormField label="Postcode" error={errors.postcode} hint="e.g. SW1A 1AA">
+        <FormField label="Postcode" htmlFor="postcode" error={errors.postcode} hint="e.g. SW1A 1AA">
           <input
+            id="postcode"
             type="text"
             value={formData.postcode}
             onChange={e => handleChange('postcode', e.target.value.toUpperCase())}
+            aria-invalid={!!errors.postcode}
+            aria-describedby={[errors.postcode ? 'postcode-error' : '', 'postcode-hint'].filter(Boolean).join(' ') || undefined}
+            autoComplete="postal-code"
             style={{ maxWidth: 180 }}
           />
         </FormField>

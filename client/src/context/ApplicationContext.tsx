@@ -1,5 +1,6 @@
-import React, { createContext, useContext, useState, useCallback } from 'react';
+import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
 import { ApplicationFormData } from '../types/loan';
+import { saveFormState, loadFormState, clearFormState } from '../utils/storage';
 
 const initialFormData: ApplicationFormData = {
   loanType: null,
@@ -37,9 +38,23 @@ interface ApplicationContextValue {
 
 const ApplicationContext = createContext<ApplicationContextValue | null>(null);
 
+function getInitialData(): ApplicationFormData {
+  const saved = loadFormState();
+  if (saved) {
+    return { ...initialFormData, ...saved } as ApplicationFormData;
+  }
+  return initialFormData;
+}
+
 export function ApplicationProvider({ children }: { children: React.ReactNode }) {
-  const [formData, setFormData] = useState<ApplicationFormData>(initialFormData);
+  const [formData, setFormData] = useState<ApplicationFormData>(getInitialData);
   const [currentStep, setCurrentStep] = useState(1);
+
+  // Persist form state on every change
+  useEffect(() => {
+    if (formData.reference) return; // Don't persist after submission
+    saveFormState(formData as unknown as Record<string, unknown>);
+  }, [formData]);
 
   const updateFormData = useCallback((partial: Partial<ApplicationFormData>) => {
     setFormData(prev => ({ ...prev, ...partial }));
@@ -48,6 +63,7 @@ export function ApplicationProvider({ children }: { children: React.ReactNode })
   const resetForm = useCallback(() => {
     setFormData(initialFormData);
     setCurrentStep(1);
+    clearFormState();
   }, []);
 
   return (

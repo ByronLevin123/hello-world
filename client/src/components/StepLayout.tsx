@@ -14,7 +14,7 @@ export function StepLayout({ step, title, children, onBack }: StepLayoutProps) {
       <ProgressBar currentStep={step} />
       <div style={styles.card}>
         {onBack && (
-          <button onClick={onBack} style={styles.backBtn}>
+          <button onClick={onBack} style={styles.backBtn} aria-label="Go back to previous step">
             &larr; Back
           </button>
         )}

@@ -24,11 +24,12 @@ export function LoanTypeStep() {
 
   return (
     <StepLayout step={1} title="What would you like the loan for?">
-      <div style={styles.grid}>
+      <div role="group" aria-label="Select loan type" style={styles.grid}>
         {LOAN_TYPES.map(({ type, description }) => (
           <button
             key={type}
             onClick={() => handleSelect(type)}
+            aria-pressed={formData.loanType === type}
             style={{
               ...styles.card,
               borderColor: formData.loanType === type ? 'var(--color-primary)' : 'var(--color-border)',
@@ -49,7 +50,7 @@ export function LoanTypeStep() {
 const styles: Record<string, React.CSSProperties> = {
   grid: {
     display: 'grid',
-    gridTemplateColumns: '1fr 1fr',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
     gap: 16,
   },
   card: {
@@ -59,6 +60,7 @@ const styles: Record<string, React.CSSProperties> = {
     textAlign: 'left' as const,
     cursor: 'pointer',
     transition: 'border-color 0.2s, background 0.2s',
+    minHeight: 44,
   },
   cardTitle: {
     fontSize: 16,

@@ -11,13 +11,15 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
   if (!res.ok) {
     let message = `Request failed with status ${res.status}`;
     try {
-      const data = await res.json();
-      if (data.error) message = data.error;
+      const body = await res.json();
+      if (body.error?.message) message = body.error.message;
+      else if (body.error) message = typeof body.error === 'string' ? body.error : message;
     } catch { /* response body not JSON */ }
     throw new Error(message);
   }
 
-  return await res.json() as T;
+  const body = await res.json();
+  return (body.data ?? body) as T;
 }
 
 export function checkAffordability(params: {

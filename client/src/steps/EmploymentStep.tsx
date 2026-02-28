@@ -47,57 +47,69 @@ export function EmploymentStep() {
       title="Your employment and income"
       onBack={() => { setCurrentStep(3); navigate('/address'); }}
     >
-      <form onSubmit={handleSubmit}>
-        <FormField label="Employment status" error={errors.employmentStatus}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-            {STATUSES.map(status => (
-              <label key={status} style={styles.radio}>
-                <input
-                  type="radio"
-                  name="employmentStatus"
-                  checked={formData.employmentStatus === status}
-                  onChange={() => handleChange('employmentStatus', status)}
-                  style={{ marginRight: 8 }}
-                />
-                {EMPLOYMENT_STATUS_LABELS[status]}
-              </label>
-            ))}
-          </div>
-        </FormField>
+      <form onSubmit={handleSubmit} noValidate>
+        <fieldset style={{ border: 'none', margin: 0, padding: 0 }}>
+          <FormField label="Employment status" error={errors.employmentStatus}>
+            <div role="radiogroup" aria-label="Employment status" style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {STATUSES.map(status => (
+                <label key={status} style={styles.radio}>
+                  <input
+                    type="radio"
+                    name="employmentStatus"
+                    checked={formData.employmentStatus === status}
+                    onChange={() => handleChange('employmentStatus', status)}
+                    style={{ marginRight: 8 }}
+                  />
+                  {EMPLOYMENT_STATUS_LABELS[status]}
+                </label>
+              ))}
+            </div>
+          </FormField>
+        </fieldset>
 
         {showEmployer && (
-          <FormField label="Employer name" error={errors.employerName}>
+          <FormField label="Employer name" htmlFor="employerName" error={errors.employerName}>
             <input
+              id="employerName"
               type="text"
               value={formData.employerName}
               onChange={e => handleChange('employerName', e.target.value)}
+              aria-invalid={!!errors.employerName}
+              aria-describedby={errors.employerName ? 'employerName-error' : undefined}
+              autoComplete="organization"
             />
           </FormField>
         )}
 
-        <FormField label="Annual income (before tax)" error={errors.annualIncome} hint="Your total yearly income in GBP">
+        <FormField label="Annual income (before tax)" htmlFor="annualIncome" error={errors.annualIncome} hint="Your total yearly income in GBP">
           <div style={styles.currencyWrap}>
-            <span style={styles.currencySymbol}>&pound;</span>
+            <span style={styles.currencySymbol} aria-hidden="true">&pound;</span>
             <input
+              id="annualIncome"
               type="number"
               min="0"
               step="100"
               value={formData.annualIncome ?? ''}
               onChange={e => handleChange('annualIncome', e.target.value ? parseFloat(e.target.value) : null)}
+              aria-invalid={!!errors.annualIncome}
+              aria-describedby={[errors.annualIncome ? 'annualIncome-error' : '', 'annualIncome-hint'].filter(Boolean).join(' ') || undefined}
               style={{ paddingLeft: 28 }}
             />
           </div>
         </FormField>
 
-        <FormField label="Monthly outgoings" error={errors.monthlyOutgoings} hint="Include rent/mortgage, bills, existing loans, living costs">
+        <FormField label="Monthly outgoings" htmlFor="monthlyOutgoings" error={errors.monthlyOutgoings} hint="Include rent/mortgage, bills, existing loans, living costs">
           <div style={styles.currencyWrap}>
-            <span style={styles.currencySymbol}>&pound;</span>
+            <span style={styles.currencySymbol} aria-hidden="true">&pound;</span>
             <input
+              id="monthlyOutgoings"
               type="number"
               min="0"
               step="50"
               value={formData.monthlyOutgoings ?? ''}
               onChange={e => handleChange('monthlyOutgoings', e.target.value ? parseFloat(e.target.value) : null)}
+              aria-invalid={!!errors.monthlyOutgoings}
+              aria-describedby={[errors.monthlyOutgoings ? 'monthlyOutgoings-error' : '', 'monthlyOutgoings-hint'].filter(Boolean).join(' ') || undefined}
               style={{ paddingLeft: 28 }}
             />
           </div>

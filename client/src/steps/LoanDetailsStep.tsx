@@ -46,30 +46,36 @@ export function LoanDetailsStep() {
       title="How much would you like to borrow?"
       onBack={() => { setCurrentStep(4); navigate('/employment'); }}
     >
-      <form onSubmit={handleSubmit}>
-        <FormField label={`Loan amount: ${formatGBPNoPence(amount)}`} error={errors.loanAmount}>
+      <form onSubmit={handleSubmit} noValidate>
+        <FormField label={`Loan amount: ${formatGBPNoPence(amount)}`} htmlFor="loanAmount" error={errors.loanAmount}>
           <input
+            id="loanAmount"
             type="range"
             min="1000"
             max="25000"
             step="500"
             value={amount}
             onChange={e => updateFormData({ loanAmount: parseInt(e.target.value) })}
+            aria-valuemin={1000}
+            aria-valuemax={25000}
+            aria-valuenow={amount}
+            aria-valuetext={formatGBPNoPence(amount)}
             style={{ width: '100%' }}
           />
-          <div style={styles.rangeLabels}>
+          <div style={styles.rangeLabels} aria-hidden="true">
             <span>£1,000</span>
             <span>£25,000</span>
           </div>
         </FormField>
 
         <FormField label="Loan term">
-          <div style={styles.termGrid}>
+          <div role="group" aria-label="Select loan term" style={styles.termGrid}>
             {TERMS.map(t => (
               <button
                 key={t}
                 type="button"
                 onClick={() => updateFormData({ loanTermMonths: t })}
+                aria-pressed={term === t}
                 style={{
                   ...styles.termBtn,
                   background: term === t ? 'var(--color-primary)' : 'var(--color-white)',
@@ -83,24 +89,26 @@ export function LoanDetailsStep() {
           </div>
         </FormField>
 
-        <div style={styles.preview}>
+        <div style={styles.preview} role="region" aria-label="Repayment summary">
           <h3 style={styles.previewTitle}>Your repayment summary</h3>
-          <div style={styles.previewRow}>
-            <span>Monthly repayment</span>
-            <strong>{formatGBP(monthly)}</strong>
-          </div>
-          <div style={styles.previewRow}>
-            <span>Total amount repayable</span>
-            <strong>{formatGBP(total)}</strong>
-          </div>
-          <div style={styles.previewRow}>
-            <span>Total cost of credit</span>
-            <strong>{formatGBP(totalInterest)}</strong>
-          </div>
-          <div style={styles.previewRow}>
-            <span>Representative APR</span>
-            <strong>{apr}%</strong>
-          </div>
+          <dl style={{ margin: 0 }}>
+            <div style={styles.previewRow}>
+              <dt>Monthly repayment</dt>
+              <dd style={{ fontWeight: 700, margin: 0 }}>{formatGBP(monthly)}</dd>
+            </div>
+            <div style={styles.previewRow}>
+              <dt>Total amount repayable</dt>
+              <dd style={{ fontWeight: 700, margin: 0 }}>{formatGBP(total)}</dd>
+            </div>
+            <div style={styles.previewRow}>
+              <dt>Total cost of credit</dt>
+              <dd style={{ fontWeight: 700, margin: 0 }}>{formatGBP(totalInterest)}</dd>
+            </div>
+            <div style={styles.previewRow}>
+              <dt>Representative APR</dt>
+              <dd style={{ fontWeight: 700, margin: 0 }}>{apr}%</dd>
+            </div>
+          </dl>
         </div>
 
         <FCADisclosure apr={apr} />
@@ -134,6 +142,8 @@ const styles: Record<string, React.CSSProperties> = {
     fontWeight: 600,
     fontSize: 14,
     transition: 'all 0.2s',
+    minHeight: 44,
+    minWidth: 44,
   },
   preview: {
     background: '#f0f7fb',

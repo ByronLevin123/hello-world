@@ -43,44 +43,64 @@ export function PersonalDetailsStep() {
       title="Tell us about yourself"
       onBack={() => { setCurrentStep(1); navigate('/'); }}
     >
-      <form onSubmit={handleSubmit}>
-        <FormField label="First name" error={errors.firstName}>
+      <form onSubmit={handleSubmit} noValidate>
+        <FormField label="First name" htmlFor="firstName" error={errors.firstName}>
           <input
+            id="firstName"
             type="text"
             value={formData.firstName}
             onChange={e => handleChange('firstName', e.target.value)}
+            aria-invalid={!!errors.firstName}
+            aria-describedby={errors.firstName ? 'firstName-error' : undefined}
+            autoComplete="given-name"
           />
         </FormField>
 
-        <FormField label="Last name" error={errors.lastName}>
+        <FormField label="Last name" htmlFor="lastName" error={errors.lastName}>
           <input
+            id="lastName"
             type="text"
             value={formData.lastName}
             onChange={e => handleChange('lastName', e.target.value)}
+            aria-invalid={!!errors.lastName}
+            aria-describedby={errors.lastName ? 'lastName-error' : undefined}
+            autoComplete="family-name"
           />
         </FormField>
 
-        <FormField label="Date of birth" error={errors.dateOfBirth}>
+        <FormField label="Date of birth" htmlFor="dateOfBirth" error={errors.dateOfBirth}>
           <input
+            id="dateOfBirth"
             type="date"
             value={formData.dateOfBirth}
             onChange={e => handleChange('dateOfBirth', e.target.value)}
+            aria-invalid={!!errors.dateOfBirth}
+            aria-describedby={errors.dateOfBirth ? 'dateOfBirth-error' : undefined}
+            autoComplete="bday"
           />
         </FormField>
 
-        <FormField label="Email address" error={errors.email}>
+        <FormField label="Email address" htmlFor="email" error={errors.email}>
           <input
+            id="email"
             type="email"
             value={formData.email}
             onChange={e => handleChange('email', e.target.value)}
+            aria-invalid={!!errors.email}
+            aria-describedby={errors.email ? 'email-error' : undefined}
+            autoComplete="email"
           />
         </FormField>
 
-        <FormField label="Phone number" error={errors.phone} hint="e.g. 07700 900123">
+        <FormField label="Phone number" htmlFor="phone" error={errors.phone} hint="e.g. 07700 900123">
           <input
+            id="phone"
             type="tel"
             value={formData.phone}
             onChange={e => handleChange('phone', e.target.value)}
+            aria-invalid={!!errors.phone}
+            aria-describedby={[errors.phone ? 'phone-error' : '', 'phone-hint'].filter(Boolean).join(' ') || undefined}
+            autoComplete="tel"
           />
         </FormField>
 

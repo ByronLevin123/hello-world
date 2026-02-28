@@ -46,7 +46,7 @@ export function ApplicationDetailPanel({ applicationId, onClose, role, onUpdated
   async function handleAddNote() {
     if (!noteText.trim()) return;
     try {
-      await addApplicationNote(applicationId, 'Staff User', role, noteText.trim());
+      await addApplicationNote(applicationId, noteText.trim());
       setNoteText('');
       const updated = await fetchApplicationDetail(applicationId);
       setApp(updated);

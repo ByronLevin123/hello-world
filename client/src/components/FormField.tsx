@@ -2,18 +2,26 @@ import React from 'react';
 
 interface FormFieldProps {
   label: string;
+  htmlFor?: string;
   error?: string;
   hint?: string;
   children: React.ReactNode;
 }
 
-export function FormField({ label, error, hint, children }: FormFieldProps) {
+export function FormField({ label, htmlFor, error, hint, children }: FormFieldProps) {
+  const errorId = htmlFor ? `${htmlFor}-error` : undefined;
+  const hintId = htmlFor ? `${htmlFor}-hint` : undefined;
+
   return (
     <div style={{ marginBottom: 20 }}>
-      <label style={styles.label}>{label}</label>
-      {hint && <p style={styles.hint}>{hint}</p>}
+      <label htmlFor={htmlFor} style={styles.label}>{label}</label>
+      {hint && <p id={hintId} style={styles.hint}>{hint}</p>}
       {children}
-      {error && <p className="error-text">{error}</p>}
+      {error && (
+        <p id={errorId} className="error-text" role="alert" aria-live="assertive">
+          {error}
+        </p>
+      )}
     </div>
   );
 }

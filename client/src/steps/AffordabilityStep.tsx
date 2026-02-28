@@ -43,7 +43,7 @@ export function AffordabilityStep() {
   if (loading) {
     return (
       <StepLayout step={6} title="Checking affordability...">
-        <div style={styles.loading}>
+        <div style={styles.loading} role="status" aria-live="polite">
           <p>Checking affordability...</p>
         </div>
       </StepLayout>
@@ -53,9 +53,9 @@ export function AffordabilityStep() {
   if (error) {
     return (
       <StepLayout step={6} title="Affordability Check" onBack={() => { setCurrentStep(5); navigate('/loan-details'); }}>
-        <div style={styles.errorBox}>
+        <div style={styles.errorBox} role="alert">
           <p>Something went wrong: {error}</p>
-          <button className="btn btn-secondary" onClick={() => window.location.reload()}>
+          <button className="btn btn-secondary" onClick={() => window.location.reload()} style={{ minHeight: 44 }}>
             Try again
           </button>
         </div>
@@ -71,23 +71,25 @@ export function AffordabilityStep() {
     >
       {result?.affordabilityPassed ? (
         <div>
-          <div style={styles.passBox}>
+          <div style={styles.passBox} role="status" aria-live="polite">
             <h2 style={styles.passTitle}>Good news</h2>
             <p>Based on your income and outgoings, this loan appears affordable.</p>
           </div>
-          <div style={styles.summary}>
-            <div style={styles.summaryRow}>
-              <span>Monthly repayment</span>
-              <strong>{formatGBP(result.monthlyRepayment)}</strong>
-            </div>
-            <div style={styles.summaryRow}>
-              <span>Disposable income remaining</span>
-              <strong>{formatGBP(result.disposableIncome)}</strong>
-            </div>
+          <div style={styles.summary} role="region" aria-label="Affordability summary">
+            <dl style={{ margin: 0 }}>
+              <div style={styles.summaryRow}>
+                <dt>Monthly repayment</dt>
+                <dd style={{ fontWeight: 700, margin: 0 }}>{formatGBP(result.monthlyRepayment)}</dd>
+              </div>
+              <div style={styles.summaryRow}>
+                <dt>Disposable income remaining</dt>
+                <dd style={{ fontWeight: 700, margin: 0 }}>{formatGBP(result.disposableIncome)}</dd>
+              </div>
+            </dl>
           </div>
           <button
             className="btn btn-primary"
-            style={{ marginTop: 24 }}
+            style={{ marginTop: 24, minHeight: 44 }}
             onClick={() => { setCurrentStep(7); navigate('/review'); }}
           >
             Continue to review
@@ -95,7 +97,7 @@ export function AffordabilityStep() {
         </div>
       ) : (
         <div>
-          <div style={styles.failBox}>
+          <div style={styles.failBox} role="alert">
             <h2 style={styles.failTitle}>Affordability concern</h2>
             <p>Based on the information provided, this loan may not be affordable.</p>
             {result?.reason && <p style={{ marginTop: 8, fontSize: 14 }}>{result.reason}</p>}
@@ -105,7 +107,7 @@ export function AffordabilityStep() {
           </p>
           <button
             className="btn btn-secondary"
-            style={{ marginTop: 16 }}
+            style={{ marginTop: 16, minHeight: 44 }}
             onClick={() => { setCurrentStep(5); navigate('/loan-details'); }}
           >
             Adjust your loan

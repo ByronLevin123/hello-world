@@ -1,10 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
 import { createApplication, getApplicationByReference, runAffordabilityCheck } from '../services/applicationService';
+import { NotFoundError } from '../errors';
 
 export async function submitApplication(req: Request, res: Response, next: NextFunction) {
   try {
     const result = await createApplication(req.body);
-    res.status(201).json(result);
+    res.status(201).json({ data: result });
   } catch (err) {
     next(err);
   }
@@ -14,10 +15,9 @@ export async function getApplication(req: Request, res: Response, next: NextFunc
   try {
     const application = await getApplicationByReference(req.params.reference);
     if (!application) {
-      res.status(404).json({ error: 'Application not found' });
-      return;
+      throw new NotFoundError('Application', req.params.reference);
     }
-    res.json(application);
+    res.json({ data: application });
   } catch (err) {
     next(err);
   }
@@ -26,7 +26,7 @@ export async function getApplication(req: Request, res: Response, next: NextFunc
 export function affordabilityCheck(req: Request, res: Response, next: NextFunction) {
   try {
     const result = runAffordabilityCheck(req.body);
-    res.json(result);
+    res.json({ data: result });
   } catch (err) {
     next(err);
   }

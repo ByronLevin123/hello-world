@@ -4,22 +4,41 @@ import { FrontOfficeView } from './views/FrontOfficeView';
 import { MiddleOfficeView } from './views/MiddleOfficeView';
 import { BackOfficeView } from './views/BackOfficeView';
 import { ExecutiveView } from './views/ExecutiveView';
+import { LoginForm } from './components/LoginForm';
+import { clearToken, getStoredUser } from './api';
 
 const ROLES: Role[] = ['branch', 'underwriter', 'compliance', 'executive'];
 
 export function DashboardShell() {
-  const [role, setRole] = useState<Role>('executive');
+  const stored = getStoredUser();
+  const [user, setUser] = useState<{ username: string; role: string } | null>(stored);
+  const [role, setRole] = useState<Role>((stored?.role as Role) || 'executive');
+
+  if (!user) {
+    return (
+      <LoginForm onLogin={(u) => {
+        setUser(u);
+        setRole(u.role as Role);
+      }} />
+    );
+  }
+
+  function handleLogout() {
+    clearToken();
+    setUser(null);
+  }
 
   return (
     <div style={styles.container}>
       <header style={styles.header}>
         <div style={styles.headerInner}>
           <h1 style={styles.logo}>UK Lending Platform</h1>
-          <div style={styles.roleSwitcher}>
+          <nav style={styles.roleSwitcher} aria-label="Dashboard view selector">
             {ROLES.map(r => (
               <button
                 key={r}
                 onClick={() => setRole(r)}
+                aria-current={role === r ? 'true' : undefined}
                 style={{
                   ...styles.roleBtn,
                   background: role === r ? '#fff' : 'transparent',
@@ -30,6 +49,12 @@ export function DashboardShell() {
                 {ROLE_LABELS[r]}
               </button>
             ))}
+          </nav>
+          <div style={styles.userInfo}>
+            <span style={{ color: 'rgba(255,255,255,0.8)', fontSize: 13 }}>{user.username}</span>
+            <button onClick={handleLogout} style={styles.logoutBtn} aria-label="Sign out">
+              Sign out
+            </button>
           </div>
         </div>
       </header>
@@ -39,7 +64,7 @@ export function DashboardShell() {
         <span style={styles.roleDesc}>{ROLE_DESCRIPTIONS[role]}</span>
       </div>
 
-      <main style={styles.main}>
+      <main style={styles.main} aria-label={`${ROLE_LABELS[role]} dashboard`}>
         {role === 'branch' && <FrontOfficeView />}
         {role === 'underwriter' && <MiddleOfficeView />}
         {role === 'compliance' && <BackOfficeView />}
@@ -61,6 +86,13 @@ const styles: Record<string, React.CSSProperties> = {
   roleBtn: {
     border: 'none', borderRadius: 6, padding: '8px 16px', fontSize: 13,
     cursor: 'pointer', transition: 'all 0.2s', whiteSpace: 'nowrap' as const,
+    minHeight: 44, minWidth: 44,
+  },
+  userInfo: { display: 'flex', alignItems: 'center', gap: 12 },
+  logoutBtn: {
+    background: 'rgba(255,255,255,0.2)', border: 'none', color: '#fff',
+    padding: '6px 14px', borderRadius: 6, fontSize: 12, cursor: 'pointer',
+    minHeight: 44,
   },
   roleBar: {
     background: '#fff', borderBottom: '1px solid var(--color-border)',

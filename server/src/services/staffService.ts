@@ -187,7 +187,7 @@ function buildUpdateSets(update: Record<string, unknown>) {
   return { sets, params, nextIdx: idx };
 }
 
-export async function updateApplicationWithAudit(id: string, update: Record<string, unknown>) {
+export async function updateApplicationWithAudit(id: string, update: Record<string, unknown>, performedBy?: string, performerRole?: string) {
   return runInTransaction(async (client) => {
     const { sets, params, nextIdx } = buildUpdateSets(update);
     params.push(id);
@@ -205,8 +205,8 @@ export async function updateApplicationWithAudit(id: string, update: Record<stri
         [
           id,
           update.decision ? 'decision_made' : 'status_changed',
-          (update.decisionBy || update.complianceReviewedBy || 'Staff') as string,
-          update.complianceStatus ? 'compliance' : 'underwriter',
+          performedBy || (update.decisionBy || update.complianceReviewedBy || 'Staff') as string,
+          performerRole || (update.complianceStatus ? 'compliance' : 'underwriter'),
           events.join('. '),
         ]
       );

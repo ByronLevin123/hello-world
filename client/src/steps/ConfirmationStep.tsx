@@ -14,9 +14,9 @@ export function ConfirmationStep() {
 
   return (
     <StepLayout step={8} title="Application submitted">
-      <div style={styles.refBox}>
-        <p style={styles.refLabel}>Your reference number</p>
-        <p style={styles.refNumber}>{formData.reference}</p>
+      <div style={styles.refBox} role="status" aria-live="polite">
+        <p style={styles.refLabel} id="ref-label">Your reference number</p>
+        <p style={styles.refNumber} aria-labelledby="ref-label">{formData.reference}</p>
       </div>
 
       <div style={styles.nextSteps}>
@@ -29,7 +29,7 @@ export function ConfirmationStep() {
         </ul>
       </div>
 
-      <button className="btn btn-secondary" style={{ marginTop: 24 }} onClick={handleNewApplication}>
+      <button className="btn btn-secondary" style={{ marginTop: 24, minHeight: 44 }} onClick={handleNewApplication}>
         Start a new application
       </button>
     </StepLayout>
