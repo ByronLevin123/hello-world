@@ -18,20 +18,26 @@ export function ApplicationDetailPanel({ applicationId, onClose, role, onUpdated
   const [loading, setLoading] = useState(true);
   const [noteText, setNoteText] = useState('');
   const [actionLoading, setActionLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     setLoading(true);
+    setError(null);
     fetchApplicationDetail(applicationId)
       .then(setApp)
+      .catch(() => setError('Failed to load application details'))
       .finally(() => setLoading(false));
   }, [applicationId]);
 
   async function handleAction(action: Record<string, unknown>) {
     setActionLoading(true);
+    setError(null);
     try {
       const updated = await updateApplication(applicationId, action);
       setApp(updated);
       onUpdated?.();
+    } catch {
+      setError('Action failed. Please try again.');
     } finally {
       setActionLoading(false);
     }
@@ -39,18 +45,31 @@ export function ApplicationDetailPanel({ applicationId, onClose, role, onUpdated
 
   async function handleAddNote() {
     if (!noteText.trim()) return;
-    await addApplicationNote(applicationId, 'Staff User', role, noteText.trim());
-    setNoteText('');
-    const updated = await fetchApplicationDetail(applicationId);
-    setApp(updated);
+    try {
+      await addApplicationNote(applicationId, 'Staff User', role, noteText.trim());
+      setNoteText('');
+      const updated = await fetchApplicationDetail(applicationId);
+      setApp(updated);
+    } catch {
+      setError('Failed to add note. Please try again.');
+    }
   }
 
-  if (loading || !app) {
+  if (loading) {
     return <div style={styles.panel}><p style={{ padding: 40, textAlign: 'center' }}>Loading...</p></div>;
+  }
+
+  if (error && !app) {
+    return <div style={styles.panel}><p style={{ padding: 40, textAlign: 'center', color: '#c62828' }}>{error}</p></div>;
+  }
+
+  if (!app) {
+    return <div style={styles.panel}><p style={{ padding: 40, textAlign: 'center' }}>Application not found</p></div>;
   }
 
   return (
     <div style={styles.panel}>
+      {error && <div style={{ padding: '8px 20px', background: '#fce4ec', color: '#c62828', fontSize: 13 }}>{error}</div>}
       <div style={styles.panelHeader}>
         <div>
           <h2 style={styles.panelTitle}>{app.reference}</h2>

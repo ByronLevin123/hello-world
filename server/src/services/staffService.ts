@@ -1,4 +1,5 @@
 import { pool } from '../db/connection';
+import { PoolClient } from 'pg';
 
 export interface DashboardStats {
   totalApplications: number;
@@ -144,20 +145,22 @@ export async function getApplicationDetail(id: string) {
   };
 }
 
-export async function updateApplicationStatus(id: string, update: {
-  status?: string;
-  decision?: string;
-  decisionBy?: string;
-  decisionNotes?: string;
-  assignedTo?: string;
-  complianceStatus?: string;
-  amlCheckPassed?: boolean;
-  kycCheckPassed?: boolean;
-  fraudCheckPassed?: boolean;
-  complianceReviewedBy?: string;
-  riskScore?: number;
-  riskBand?: string;
-}) {
+async function runInTransaction<T>(fn: (client: PoolClient) => Promise<T>): Promise<T> {
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+    const result = await fn(client);
+    await client.query('COMMIT');
+    return result;
+  } catch (err) {
+    await client.query('ROLLBACK');
+    throw err;
+  } finally {
+    client.release();
+  }
+}
+
+function buildUpdateSets(update: Record<string, unknown>) {
   const sets: string[] = ['updated_at = NOW()'];
   const params: unknown[] = [];
   let idx = 1;
@@ -181,20 +184,45 @@ export async function updateApplicationStatus(id: string, update: {
   if (update.riskScore !== undefined) { sets.push(`risk_score = $${idx++}`); params.push(update.riskScore); }
   if (update.riskBand) { sets.push(`risk_band = $${idx++}`); params.push(update.riskBand); }
 
-  params.push(id);
-  await pool.query(`UPDATE applications SET ${sets.join(', ')} WHERE id = $${idx}`, params);
+  return { sets, params, nextIdx: idx };
 }
 
-export async function addNote(applicationId: string, author: string, role: string, content: string) {
-  await pool.query(
-    `INSERT INTO application_notes (application_id, author, role, content) VALUES ($1, $2, $3, $4)`,
-    [applicationId, author, role, content]
-  );
+export async function updateApplicationWithAudit(id: string, update: Record<string, unknown>) {
+  return runInTransaction(async (client) => {
+    const { sets, params, nextIdx } = buildUpdateSets(update);
+    params.push(id);
+    await client.query(`UPDATE applications SET ${sets.join(', ')} WHERE id = $${nextIdx}`, params);
+
+    const events: string[] = [];
+    if (update.status) events.push(`Status changed to ${update.status}`);
+    if (update.decision) events.push(`Decision: ${update.decision}`);
+    if (update.complianceStatus) events.push(`Compliance status: ${update.complianceStatus}`);
+    if (update.assignedTo) events.push(`Assigned to ${update.assignedTo}`);
+
+    if (events.length > 0) {
+      await client.query(
+        `INSERT INTO audit_events (application_id, event_type, performed_by, role, details) VALUES ($1, $2, $3, $4, $5)`,
+        [
+          id,
+          update.decision ? 'decision_made' : 'status_changed',
+          (update.decisionBy || update.complianceReviewedBy || 'Staff') as string,
+          update.complianceStatus ? 'compliance' : 'underwriter',
+          events.join('. '),
+        ]
+      );
+    }
+  });
 }
 
-export async function addAuditEvent(applicationId: string, eventType: string, performedBy: string, role: string, details: string) {
-  await pool.query(
-    `INSERT INTO audit_events (application_id, event_type, performed_by, role, details) VALUES ($1, $2, $3, $4, $5)`,
-    [applicationId, eventType, performedBy, role, details]
-  );
+export async function addNoteWithAudit(applicationId: string, author: string, role: string, content: string) {
+  return runInTransaction(async (client) => {
+    await client.query(
+      `INSERT INTO application_notes (application_id, author, role, content) VALUES ($1, $2, $3, $4)`,
+      [applicationId, author, role, content]
+    );
+    await client.query(
+      `INSERT INTO audit_events (application_id, event_type, performed_by, role, details) VALUES ($1, $2, $3, $4, $5)`,
+      [applicationId, 'note_added', author, role, `Note added: ${content.substring(0, 50)}...`]
+    );
+  });
 }

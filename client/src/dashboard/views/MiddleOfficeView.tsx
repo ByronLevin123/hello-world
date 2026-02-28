@@ -1,10 +1,9 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { ApplicationSummary } from '../types';
+import { ApplicationSummary, DashboardStats } from '../types';
 import { fetchApplications, fetchDashboardStats } from '../api';
 import { ApplicationTable } from '../components/ApplicationTable';
 import { ApplicationDetailPanel } from '../components/ApplicationDetailPanel';
 import { StatCard } from '../components/StatCard';
-import { DashboardStats } from '../types';
 
 export function MiddleOfficeView() {
   const [apps, setApps] = useState<ApplicationSummary[]>([]);
@@ -13,9 +12,11 @@ export function MiddleOfficeView() {
   const [riskFilter, setRiskFilter] = useState('');
   const [selected, setSelected] = useState<ApplicationSummary | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const load = useCallback(() => {
     setLoading(true);
+    setError(null);
     const params: Record<string, string> = {};
     if (queueFilter) params.status = queueFilter;
     if (riskFilter) params.riskBand = riskFilter;
@@ -25,7 +26,8 @@ export function MiddleOfficeView() {
     ]).then(([r, s]) => {
       setApps(r.applications);
       setStats(s);
-    }).finally(() => setLoading(false));
+    }).catch(() => setError('Failed to load data'))
+    .finally(() => setLoading(false));
   }, [queueFilter, riskFilter]);
 
   useEffect(() => { load(); }, [load]);
@@ -76,7 +78,9 @@ export function MiddleOfficeView() {
       <div style={styles.layout}>
         <div style={{ flex: selected ? 1 : 1 }}>
           <div style={styles.tableCard}>
-            {loading ? <p style={{ padding: 20, textAlign: 'center' }}>Loading...</p> : (
+            {loading ? <p style={{ padding: 20, textAlign: 'center' }}>Loading...</p> : error ? (
+              <p style={{ padding: 20, textAlign: 'center', color: '#c62828' }}>{error}</p>
+            ) : (
               <ApplicationTable applications={apps} onSelect={setSelected} showRisk />
             )}
           </div>

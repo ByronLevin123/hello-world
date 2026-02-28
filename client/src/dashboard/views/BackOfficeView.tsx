@@ -11,9 +11,11 @@ export function BackOfficeView() {
   const [compFilter, setCompFilter] = useState('pending');
   const [selected, setSelected] = useState<ApplicationSummary | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const load = useCallback(() => {
     setLoading(true);
+    setError(null);
     const params: Record<string, string> = {};
     if (compFilter) params.complianceStatus = compFilter;
     Promise.all([
@@ -22,7 +24,8 @@ export function BackOfficeView() {
     ]).then(([r, s]) => {
       setApps(r.applications);
       setStats(s);
-    }).finally(() => setLoading(false));
+    }).catch(() => setError('Failed to load data'))
+    .finally(() => setLoading(false));
   }, [compFilter]);
 
   useEffect(() => { load(); }, [load]);
@@ -91,7 +94,9 @@ export function BackOfficeView() {
       <div style={styles.layout}>
         <div style={{ flex: selected ? 1 : 1 }}>
           <div style={styles.tableCard}>
-            {loading ? <p style={{ padding: 20, textAlign: 'center' }}>Loading...</p> : (
+            {loading ? <p style={{ padding: 20, textAlign: 'center' }}>Loading...</p> : error ? (
+              <p style={{ padding: 20, textAlign: 'center', color: '#c62828' }}>{error}</p>
+            ) : (
               <ApplicationTable applications={apps} onSelect={setSelected} showCompliance showRisk />
             )}
           </div>

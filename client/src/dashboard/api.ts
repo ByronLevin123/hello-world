@@ -7,9 +7,17 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
     headers: { 'Content-Type': 'application/json' },
     ...options,
   });
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.error || 'Request failed');
-  return data as T;
+
+  if (!res.ok) {
+    let message = 'Request failed';
+    try {
+      const data = await res.json();
+      if (data.error) message = data.error;
+    } catch { /* response body not JSON */ }
+    throw new Error(message);
+  }
+
+  return await res.json() as T;
 }
 
 export function fetchDashboardStats(): Promise<DashboardStats> {

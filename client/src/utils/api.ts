@@ -8,13 +8,16 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
     ...options,
   });
 
-  const data = await res.json();
-
   if (!res.ok) {
-    throw new Error(data.error || `Request failed with status ${res.status}`);
+    let message = `Request failed with status ${res.status}`;
+    try {
+      const data = await res.json();
+      if (data.error) message = data.error;
+    } catch { /* response body not JSON */ }
+    throw new Error(message);
   }
 
-  return data as T;
+  return await res.json() as T;
 }
 
 export function checkAffordability(params: {

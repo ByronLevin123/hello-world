@@ -12,14 +12,17 @@ export function FrontOfficeView() {
   const [statusFilter, setStatusFilter] = useState('');
   const [selected, setSelected] = useState<ApplicationSummary | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const load = useCallback(() => {
     setLoading(true);
+    setError(null);
     const params: Record<string, string> = {};
     if (search) params.search = search;
     if (statusFilter) params.status = statusFilter;
     fetchApplications(params)
       .then(r => { setApps(r.applications); setTotal(r.total); })
+      .catch(() => setError('Failed to load applications'))
       .finally(() => setLoading(false));
   }, [search, statusFilter]);
 
@@ -57,7 +60,9 @@ export function FrontOfficeView() {
       <div style={styles.layout}>
         <div style={{ flex: selected ? 1 : 1 }}>
           <div style={styles.tableCard}>
-            {loading ? <p style={{ padding: 20, textAlign: 'center' }}>Loading...</p> : (
+            {loading ? <p style={{ padding: 20, textAlign: 'center' }}>Loading...</p> : error ? (
+              <p style={{ padding: 20, textAlign: 'center', color: '#c62828' }}>{error}</p>
+            ) : (
               <ApplicationTable applications={apps} onSelect={setSelected} showRisk showCompliance />
             )}
           </div>

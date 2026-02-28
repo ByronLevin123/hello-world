@@ -78,8 +78,8 @@ export function ReviewStep() {
       updateFormData({ reference: result.reference });
       setCurrentStep(8);
       navigate('/confirmation');
-    } catch (err: any) {
-      setError(err.message || 'Failed to submit application');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to submit application');
     } finally {
       setSubmitting(false);
     }
