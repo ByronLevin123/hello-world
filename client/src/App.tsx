@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Link, useLocation } from 'react-router-dom';
 import { LoanTypeStep } from './steps/LoanTypeStep';
 import { PersonalDetailsStep } from './steps/PersonalDetailsStep';
 import { AddressStep } from './steps/AddressStep';
@@ -8,13 +8,22 @@ import { LoanDetailsStep } from './steps/LoanDetailsStep';
 import { AffordabilityStep } from './steps/AffordabilityStep';
 import { ReviewStep } from './steps/ReviewStep';
 import { ConfirmationStep } from './steps/ConfirmationStep';
+import { DashboardShell } from './dashboard/DashboardShell';
 
 export function App() {
+  const location = useLocation();
+  const isDashboard = location.pathname.startsWith('/dashboard');
+
+  if (isDashboard) {
+    return <DashboardShell />;
+  }
+
   return (
     <div>
       <header style={styles.header}>
         <div style={styles.headerInner}>
           <h2 style={styles.logo}>UK Loan Application</h2>
+          <Link to="/dashboard" style={styles.dashLink}>Staff Dashboard</Link>
         </div>
       </header>
 
@@ -55,10 +64,21 @@ const styles: Record<string, React.CSSProperties> = {
     maxWidth: 'var(--max-width)',
     margin: '0 auto',
     padding: '0 16px',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   logo: {
     fontSize: 18,
     fontWeight: 700,
+  },
+  dashLink: {
+    color: 'rgba(255,255,255,0.85)',
+    fontSize: 13,
+    textDecoration: 'none',
+    border: '1px solid rgba(255,255,255,0.3)',
+    borderRadius: 6,
+    padding: '6px 14px',
   },
   footer: {
     background: 'var(--color-white)',

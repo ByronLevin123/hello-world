@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import path from 'path';
 import { applicationsRouter } from './routes/applications';
+import { staffRouter } from './routes/staff';
 import { errorHandler } from './middleware/errorHandler';
 
 const app = express();
@@ -14,6 +15,7 @@ app.get('/api/health', (_req, res) => {
 });
 
 app.use('/api', applicationsRouter);
+app.use('/api/staff', staffRouter);
 
 // Serve built frontend static files
 const clientDist = path.join(__dirname, '../../client/dist');
