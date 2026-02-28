@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import path from 'path';
 import { applicationsRouter } from './routes/applications';
 import { errorHandler } from './middleware/errorHandler';
 
@@ -13,6 +14,15 @@ app.get('/api/health', (_req, res) => {
 });
 
 app.use('/api', applicationsRouter);
+
+// Serve built frontend static files
+const clientDist = path.join(__dirname, '../../client/dist');
+app.use(express.static(clientDist));
+
+// Client-side routing fallback — serve index.html for all non-API routes
+app.get('*', (_req, res) => {
+  res.sendFile(path.join(clientDist, 'index.html'));
+});
 
 app.use(errorHandler);
 
