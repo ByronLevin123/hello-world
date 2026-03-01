@@ -15,17 +15,14 @@ import { logger } from './lib/logger';
 
 const app = express();
 
+// Trust proxy (needed when behind a reverse proxy)
+app.set('trust proxy', 1);
+
 // Security headers
 app.use(helmet({
-  contentSecurityPolicy: {
-    directives: {
-      defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", "https://unpkg.com"],
-      styleSrc: ["'self'", "'unsafe-inline'", "https://unpkg.com"],
-      imgSrc: ["'self'", 'data:'],
-      connectSrc: ["'self'"],
-    },
-  },
+  contentSecurityPolicy: false,
+  crossOriginResourcePolicy: { policy: 'cross-origin' },
+  crossOriginOpenerPolicy: false,
 }));
 
 // Request tracing

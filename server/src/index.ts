@@ -3,8 +3,8 @@ import { config } from './config';
 import { pool } from './db/connection';
 import { logger } from './lib/logger';
 
-const server = app.listen(config.port, () => {
-  logger.info({ port: config.port, env: config.nodeEnv }, 'Server started');
+const server = app.listen(config.port, '0.0.0.0', () => {
+  logger.info({ port: config.port, env: config.nodeEnv }, 'Server started on 0.0.0.0');
 });
 
 function gracefulShutdown(signal: string) {
