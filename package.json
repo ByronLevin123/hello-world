@@ -1,0 +1,19 @@
+{
+  "name": "uk-loan-journey",
+  "version": "1.0.0",
+  "private": true,
+  "description": "UK Retail Loan Journey Application",
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "scripts": {
+    "dev:server": "npm run dev --workspace=server",
+    "dev:client": "npm run dev --workspace=client",
+    "build:client": "npm run build --workspace=client",
+    "test": "npm run test --workspace=server && npm run test --workspace=client",
+    "test:server": "npm run test --workspace=server",
+    "test:client": "npm run test --workspace=client",
+    "db:migrate": "npm run db:migrate --workspace=server"
+  }
+}
