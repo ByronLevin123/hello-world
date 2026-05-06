@@ -81,6 +81,11 @@ a:hover{color:var(--navy)}
 .loom-strip .play-icon::after{content:'';border-left:10px solid #fff;border-top:6px solid transparent;border-bottom:6px solid transparent;margin-left:2px}
 .loom-strip .duration{background:var(--navy);color:#fff;font-size:.7rem;font-weight:600;padding:.15rem .5rem;border-radius:100px;white-space:nowrap}
 
+/* PDF BUTTON (CV) */
+.cv-pdf-bar{text-align:right;margin-bottom:1.5rem}
+.cv-pdf-btn{background:var(--navy);color:#fff;border:none;font-family:var(--sans);font-size:.8rem;font-weight:600;padding:.5rem 1.25rem;border-radius:6px;cursor:pointer;transition:background .2s}
+.cv-pdf-btn:hover{background:var(--navy-light)}
+
 /* TWO-COL CV */
 .cv-body{display:grid;grid-template-columns:1fr 300px;gap:2.5rem}
 
@@ -220,15 +225,72 @@ a:hover{color:var(--navy)}
   .loom-strip{flex-direction:column;align-items:flex-start}
 }
 
-/* ========= PRINT ========= */
+/* ========= PRINT — 1–2 page A4 CV ========= */
 @media print{
-  .site-nav,.view#portfolio,.view#brief,.brief-edit-bar,.loom-strip{display:none!important}
+  @page{size:A4;margin:12mm 14mm}
+  *{transition:none!important;animation:none!important}
+  .site-nav,.view#portfolio,.view#brief,.brief-edit-bar,.loom-strip,.cv-pdf-bar{display:none!important}
   .view#cv{display:block!important;opacity:1!important}
-  .reveal{opacity:1!important;transform:none!important;transition:none!important}
-  body{background:#fff;font-size:11pt}
+  .reveal{opacity:1!important;transform:none!important}
+  body{background:#fff;font-size:8.5pt;line-height:1.4;color:#111}
   .container{max-width:100%;padding:0}
-  .exp-card,.metric-cell{box-shadow:none;border:1px solid #ddd;transform:none!important}
-  .cv-body{grid-template-columns:1fr 260px}
+
+  .cv-header{margin-bottom:.8rem;text-align:center}
+  .cv-header h1{font-size:18pt;margin-bottom:2pt}
+  .cv-header .subtitle{font-size:9pt;margin-bottom:4pt}
+  .cv-header .contact-row{gap:.5rem;font-size:7.5pt;margin-bottom:4pt}
+  .cv-header .contact-row a{color:#234E80}
+  .header-chips{gap:3pt}
+  .header-chip{font-size:6.5pt;padding:1.5pt 6pt;background:#0F2040;color:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+
+  .metrics-strip{grid-template-columns:repeat(5,1fr);gap:6pt;margin-bottom:.7rem}
+  .metric-cell{padding:6pt 4pt;border:1px solid #ddd;border-radius:4px;box-shadow:none;transform:none!important}
+  .metric-cell .num{font-size:12pt}
+  .metric-cell .label{font-size:6pt;margin-top:1pt}
+
+  .cv-summary{margin-bottom:.6rem}
+  .cv-summary p{font-size:8pt;line-height:1.45;margin-bottom:4pt}
+
+  .cv-body{grid-template-columns:1fr 220px;gap:1rem}
+
+  .exp-card{padding:8pt;margin-bottom:6pt;border:1px solid #ddd;border-radius:4px;box-shadow:none;transform:none!important;page-break-inside:avoid}
+  .exp-top{margin-bottom:2pt}
+  .exp-title{font-size:9.5pt}
+  .exp-badge{font-size:6pt;padding:1pt 5pt;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .exp-company{font-size:7.5pt;margin-bottom:1pt}
+  .exp-period{font-size:7pt;margin-bottom:4pt}
+  .exp-accounts{gap:2pt;margin-bottom:4pt}
+  .account-chip{font-size:6pt;padding:1pt 4pt;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .exp-desc{font-size:7.5pt;line-height:1.4;margin-bottom:4pt}
+  .exp-metrics{gap:2pt;margin-bottom:4pt}
+  .exp-metric{font-size:6pt;padding:1.5pt 5pt;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .exp-tags{gap:2pt}
+  .exp-tag{font-size:6pt;padding:1pt 4pt}
+
+  .sidebar section{margin-bottom:.6rem}
+  .sidebar h3{font-size:8.5pt;margin-bottom:3pt;color:#0F2040}
+  .sidebar ul li{font-size:7.5pt;margin-bottom:2pt;padding-left:.7rem}
+  .sidebar ul li::before{width:4px;height:4px;top:.5em;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+
+  .edu-block{font-size:7.5pt}
+  .edu-block .note{font-size:7pt;padding-left:4pt;margin-top:2pt}
+
+  .writing-item{font-size:7pt;padding:.15rem 0 .15rem .5rem;margin-bottom:2pt;border-left-width:2px}
+  .writing-item a{color:#111}
+  .writing-cta{font-size:7pt;margin-top:2pt}
+
+  .podcast-card{padding:6pt;border-radius:4px;font-size:7pt;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .podcast-card .pod-show{font-size:7.5pt}
+  .podcast-card .pod-ep{font-size:7pt}
+  .podcast-card .pod-desc{font-size:6.5pt;margin-bottom:2pt}
+  .podcast-card .pod-cta{font-size:7pt}
+
+  .achievement-item{font-size:7pt;margin-bottom:3pt;gap:3pt}
+  .achievement-item .ach-icon{font-size:8pt}
+  .achievement-item .ach-title{font-size:7pt}
+  .achievement-item .ach-desc{font-size:6.5pt}
+
+  .market-row{font-size:7pt;padding:2pt 0}
 }
 </style>
 </head>
@@ -250,235 +312,12 @@ a:hover{color:var(--navy)}
 <div class="container">
 <div id="cv" class="view active">
 
-<!-- HEADER -->
-<header class="cv-header reveal">
-<h1>Byron Levin</h1>
-<p class="subtitle">Head of Presales · FintechOS</p>
-<div class="contact-row">
-<span>United Kingdom</span>
-<!-- ✏️ Replace email address when confirmed -->
-<a href="mailto:hello@byronlevin.com">hello@byronlevin.com</a>
-<a href="https://linkedin.com/in/byron-levin-fintech" target="_blank" rel="noopener">LinkedIn</a>
-<a href="https://substack.com/@futurestart" target="_blank" rel="noopener">Substack</a>
-</div>
-<div class="header-chips">
-<span class="header-chip">Banking</span>
-<span class="header-chip">Insurance</span>
-<span class="header-chip">AI-First Platforms</span>
-<span class="header-chip">£250K+ Deals</span>
-<span class="header-chip">Prototype-Led Selling</span>
-<span class="header-chip">Team Builder</span>
-</div>
-</header>
+<!-- PDF export button (hidden on print) -->
+<div class="cv-pdf-bar"><button class="cv-pdf-btn" onclick="window.print()">↓ Export CV as PDF</button></div>
 
-<!-- METRICS -->
-<div class="metrics-strip reveal">
-<div class="metric-cell"><div class="num">£250K+</div><div class="label">Avg deal size</div></div>
-<div class="metric-cell"><div class="num">€52M</div><div class="label">Largest value case</div></div>
-<div class="metric-cell"><div class="num">6+</div><div class="label">Live prototypes built</div></div>
-<div class="metric-cell"><div class="num">~60%</div><div class="label">Demo build time saved</div></div>
-<div class="metric-cell"><div class="num">3</div><div class="label">Active Tier 1 accounts</div></div>
-</div>
+<!-- CV content rendered from CONFIG below -->
+<div id="cv-content"></div>
 
-<!-- SUMMARY -->
-<div class="cv-summary reveal">
-<p>Enterprise presales leader with a track record in complex, high-value financial services deals across UK and Europe. Sits at the intersection of AI-first technology, banking and insurance, and strategic B2B sales — turning sophisticated platform capability into business cases that land with CDOs, CTOs, and transformation leaders.</p>
-<p>At FintechOS rebuilt the presales function around a prototype-led selling model — Forward Deployed Engineer track, structured value engineering, and a Claude AI operating stack the whole team runs on. Builds the demos personally (React, TypeScript) and stays engaged on Tier 1 accounts.</p>
-</div>
-
-<!-- LOOM -->
-<!-- ✏️ Replace with Loom URL: https://loom.com/share/YOUR_ID -->
-<a href="#" class="loom-strip reveal" style="text-decoration:none;color:var(--ink-2)">
-<span class="play-icon"></span>
-<span style="flex:1">3-min walkthrough: Lifetime Mortgage Origination Prototype — how I build and present a deal-specific working prototype in a live enterprise evaluation</span>
-<span class="duration">3:12</span>
-</a>
-
-<!-- TWO COLUMN -->
-<div class="cv-body">
-
-<!-- MAIN: EXPERIENCE -->
-<div class="cv-main">
-
-<!-- Role 1 -->
-<div class="exp-card reveal">
-<div class="exp-top">
-<span class="exp-title">Head of Presales</span>
-<span class="exp-badge">Current</span>
-</div>
-<div class="exp-company">FintechOS · AI-First ProductOps Platform for Financial Services</div>
-<div class="exp-period">2024 – Present</div>
-<div class="exp-accounts">
-<span class="account-chip">Société Générale</span>
-<span class="account-chip">Vernon Building Society</span>
-<span class="account-chip">Vendior (Romania)</span>
-</div>
-<p class="exp-desc">Leads presales across UK and European enterprise accounts — managing a team of solution consultants and an FDE track for Tier 1 deals. Built the presales methodology from scratch: prototype-led selling, MEDDIC-adjacent discovery, value engineering, and a Claude AI ops stack that cut demo build time ~60%.</p>
-<div class="exp-metrics">
-<span class="exp-metric">€34–52M value case built</span>
-<span class="exp-metric">34-req RFI · 100% compliant</span>
-<span class="exp-metric">FDE model designed & hired</span>
-<span class="exp-metric">~60% faster demo output</span>
-</div>
-<div class="exp-tags">
-<span class="exp-tag">Presales Leadership</span>
-<span class="exp-tag">FDE Model</span>
-<span class="exp-tag">Value Engineering</span>
-<span class="exp-tag">RFP Strategy</span>
-<span class="exp-tag">React Prototyping</span>
-<span class="exp-tag">Claude AI Ops</span>
-<span class="exp-tag">Banking</span>
-<span class="exp-tag">Insurance</span>
-</div>
-</div>
-
-<!-- Role 2 -->
-<div class="exp-card reveal">
-<div class="exp-top">
-<span class="exp-title">Senior Solutions Consultant</span>
-</div>
-<!-- ✏️ Replace with real company name -->
-<div class="exp-company">[Company Name — To Be Confirmed]</div>
-<div class="exp-period">2022 – 2024</div>
-<p class="exp-desc">Senior IC on complex enterprise fintech evaluations. Owned technical and commercial pre-sales across multi-stakeholder procurement cycles in core banking and lending origination.</p>
-<div class="exp-tags">
-<span class="exp-tag">Core Banking</span>
-<span class="exp-tag">Lending Origination</span>
-<span class="exp-tag">Enterprise Software</span>
-<span class="exp-tag">CTO Engagement</span>
-</div>
-</div>
-
-<!-- Role 3 -->
-<div class="exp-card reveal">
-<div class="exp-top">
-<span class="exp-title">Business Development & Presales</span>
-</div>
-<div class="exp-company">SEI (SEI Investments) · Wealth Management Technology</div>
-<!-- ✏️ Confirm dates for SEI role -->
-<div class="exp-period">[Years — To Be Confirmed]</div>
-<!-- ✏️ Confirm details — add innovation team description -->
-<p class="exp-desc">Commercial and presales roles at SEI, a global wealth management technology firm with ~$1.4 trillion AUM. Founded an internal innovation team to explore emerging fintech opportunities and accelerate go-to-market for new platform capabilities.</p>
-<div class="exp-tags">
-<span class="exp-tag">Wealth Management</span>
-<span class="exp-tag">Enterprise SaaS</span>
-<span class="exp-tag">Fintech</span>
-<span class="exp-tag">Innovation</span>
-</div>
-</div>
-
-<!-- Role 4 -->
-<div class="exp-card reveal">
-<div class="exp-top">
-<span class="exp-title">Co-Founder</span>
-</div>
-<div class="exp-company">FST (Future Start Technology)</div>
-<!-- ✏️ Confirm years for FST -->
-<div class="exp-period">c. 2016</div>
-<!-- ✏️ Confirm product/focus for FST -->
-<p class="exp-desc">Co-founded FST, a fintech venture focused on democratising financial technology. Completed the Accelerator London Launchpad Programme — a 12-week lean startup programme. Impressed judges on pitch day for strong customer validation approach and had partners lined up as early testers.</p>
-<div class="exp-tags">
-<span class="exp-tag">Fintech Startup</span>
-<span class="exp-tag">Co-Founder</span>
-<span class="exp-tag">Accelerator London</span>
-<span class="exp-tag">Lean Startup</span>
-</div>
-</div>
-
-</div><!-- /cv-main -->
-
-<!-- SIDEBAR -->
-<aside class="sidebar reveal">
-
-<!-- Core Skills -->
-<section>
-<h3>Core Skills</h3>
-<ul>
-<li>Enterprise Presales Leadership</li>
-<li>Value Engineering & Business Cases</li>
-<li>FDE Model Design & Hiring</li>
-<li>React / TypeScript Prototyping</li>
-<li>Applied AI (Claude, LLM Ops)</li>
-<li>Banking & Insurance Domain</li>
-<li>RFP / RFI Strategy</li>
-<li>Discovery & Qualification</li>
-<li>PoC Scoping & Delivery</li>
-<li>Prototype-Led Selling</li>
-<li>Jira / Confluence</li>
-</ul>
-</section>
-
-<!-- Education -->
-<section>
-<h3>Education</h3>
-<div class="edu-block">
-<div class="degree">BA (Hons) Sports Business Management</div>
-<div class="uni">London Metropolitan University</div>
-<div class="note">Final year dissertation described by supervisor as "the strongest piece of work I have seen in 7 years of supervising"</div>
-</div>
-</section>
-
-<!-- Writing -->
-<section>
-<h3>Writing — Substack</h3>
-<p style="font-size:.8rem;color:var(--ink-3);margin-bottom:.6rem">Future Start — AI, SaaS economics & enterprise software — for fintech and tech-curious readers.</p>
-<div class="writing-item"><a href="https://substack.com/@futurestart" target="_blank" rel="noopener">The Death of Per-Seat SaaS</a></div>
-<div class="writing-item"><a href="https://substack.com/@futurestart" target="_blank" rel="noopener">Results as a Service (RaaS)</a></div>
-<div class="writing-item"><a href="https://substack.com/@futurestart" target="_blank" rel="noopener">AI Abundance Economics</a></div>
-<div class="writing-item"><a href="https://substack.com/@futurestart" target="_blank" rel="noopener">Agentic AI Distribution Models</a></div>
-<div class="writing-item"><a href="https://www.linkedin.com/pulse/looking-future-fintech-merely-following-illusion-byron-levin" target="_blank" rel="noopener">Looking into the future of FinTech</a></div>
-<a href="https://substack.com/@futurestart" target="_blank" rel="noopener" class="writing-cta">Read on Substack →</a>
-</section>
-
-<!-- Podcast -->
-<section>
-<div class="podcast-card">
-<div class="pod-header">
-<span class="pod-icon">🎙️</span>
-<span class="pod-show">FintechOS Evolv</span>
-</div>
-<div class="pod-ep">AI-Powered Product Management: Speed, Innovation & the Future of Banking</div>
-<p class="pod-desc">Discussion on AI product engines, breaking free of legacy systems, vibe coding, and agents-as-a-service in banking and insurance. Host: Mark Dearman.</p>
-<a href="https://fintechosevolvpodcast.podbean.com/e/ai-powered-product-management/" target="_blank" rel="noopener" class="pod-cta">Listen →</a>
-</div>
-</section>
-
-<!-- Achievements -->
-<section>
-<h3>Achievements</h3>
-<div class="achievement-item">
-<span class="ach-icon">🏆</span>
-<div>
-<div class="ach-title">AngelHack VR Hackathon — Winner</div>
-<div class="ach-desc">Built a VR exercise and arcade game application</div>
-</div>
-</div>
-<div class="achievement-item">
-<span class="ach-icon">🚀</span>
-<div>
-<div class="ach-title">Accelerator London — Launchpad Graduate</div>
-<div class="ach-desc">12-week lean startup programme · 2016</div>
-</div>
-</div>
-<div class="achievement-item">
-<span class="ach-icon">🎓</span>
-<div>
-<div class="ach-title">Strongest dissertation in 7 years</div>
-<div class="ach-desc">Supervisor quote — London Metropolitan University</div>
-</div>
-</div>
-</section>
-
-<!-- Market Coverage -->
-<section>
-<h3>Market Coverage</h3>
-<div class="market-row"><span class="market-label">United Kingdom</span><span class="market-status">Primary</span></div>
-<div class="market-row"><span class="market-label">Western Europe</span><span class="market-status">Active</span></div>
-<div class="market-row"><span class="market-label">Eastern Europe</span><span class="market-status">Active</span></div>
-</section>
-
-</aside>
-</div><!-- /cv-body -->
 </div><!-- /cv -->
 
 <!-- ======================== PORTFOLIO VIEW ======================== -->
@@ -680,23 +519,282 @@ a:hover{color:var(--navy)}
 </div><!-- /container -->
 
 <script>
+/* ╔═══════════════════════════════════════════════════════════════════════╗
+   ║  CONFIG — Edit your CV content here. Change values, save, refresh.  ║
+   ╚═══════════════════════════════════════════════════════════════════════╝ */
+var CONFIG = {
+
+  name: 'Byron Levin',
+  title: 'Head of Presales',
+  company: 'FintechOS',
+  location: 'United Kingdom',
+  email: 'hello@byronlevin.com',          // ✏️ confirm email
+  linkedin: 'https://linkedin.com/in/byron-levin-fintech',
+  substack: 'https://substack.com/@futurestart',
+
+  chips: [
+    'Banking', 'Insurance', 'AI-First Platforms',
+    '£250K+ Deals', 'Prototype-Led Selling', 'Team Builder'
+  ],
+
+  metrics: [
+    { value: '£250K+', label: 'Avg deal size' },
+    { value: '€52M',   label: 'Largest value case' },
+    { value: '6+',     label: 'Live prototypes built' },
+    { value: '~60%',   label: 'Demo build time saved' },
+    { value: '3',      label: 'Active Tier 1 accounts' }
+  ],
+
+  summary: [
+    'Enterprise presales leader with a track record in complex, high-value financial services deals across UK and Europe. Sits at the intersection of AI-first technology, banking and insurance, and strategic B2B sales — turning sophisticated platform capability into business cases that land with CDOs, CTOs, and transformation leaders.',
+    'At FintechOS rebuilt the presales function around a prototype-led selling model — Forward Deployed Engineer track, structured value engineering, and a Claude AI operating stack the whole team runs on. Builds the demos personally (React, TypeScript) and stays engaged on Tier 1 accounts.'
+  ],
+
+  loom: {
+    text: '3-min walkthrough: Lifetime Mortgage Origination Prototype — how I build and present a deal-specific working prototype in a live enterprise evaluation',
+    duration: '3:12',
+    url: '#'  // ✏️ Replace with Loom URL
+  },
+
+  experience: [
+    {
+      title: 'Head of Presales',
+      badge: 'Current',
+      company: 'FintechOS · AI-First ProductOps Platform for Financial Services',
+      period: '2024 – Present',
+      accounts: ['Société Générale', 'Vernon Building Society', 'Vendior (Romania)'],
+      description: 'Leads presales across UK and European enterprise accounts — managing a team of solution consultants and an FDE track for Tier 1 deals. Built the presales methodology from scratch: prototype-led selling, MEDDIC-adjacent discovery, value engineering, and a Claude AI ops stack that cut demo build time ~60%.',
+      metrics: [
+        '€34–52M value case built',
+        '34-req RFI · 100% compliant',
+        'FDE model designed & hired',
+        '~60% faster demo output'
+      ],
+      tags: ['Presales Leadership', 'FDE Model', 'Value Engineering', 'RFP Strategy', 'React Prototyping', 'Claude AI Ops', 'Banking', 'Insurance']
+    },
+    {
+      title: 'Senior Solutions Consultant',
+      company: '[Company Name — To Be Confirmed]',  // ✏️ fill in
+      period: '2022 – 2024',
+      description: 'Senior IC on complex enterprise fintech evaluations. Owned technical and commercial pre-sales across multi-stakeholder procurement cycles in core banking and lending origination.',
+      tags: ['Core Banking', 'Lending Origination', 'Enterprise Software', 'CTO Engagement']
+    },
+    {
+      title: 'Business Development & Presales',
+      company: 'SEI (SEI Investments) · Wealth Management Technology',
+      period: '[Years — To Be Confirmed]',  // ✏️ fill in dates
+      description: 'Commercial and presales roles at SEI, a global wealth management technology firm with ~$1.4 trillion AUM. Founded an internal innovation team to explore emerging fintech opportunities and accelerate go-to-market for new platform capabilities.',  // ✏️ expand
+      tags: ['Wealth Management', 'Enterprise SaaS', 'Fintech', 'Innovation']
+    },
+    {
+      title: 'Co-Founder',
+      company: 'FST (Future Start Technology)',
+      period: 'c. 2016',  // ✏️ confirm years
+      description: 'Co-founded FST, a fintech venture focused on democratising financial technology. Completed the Accelerator London Launchpad Programme — a 12-week lean startup programme. Impressed judges on pitch day for strong customer validation approach and had partners lined up as early testers.',  // ✏️ confirm focus
+      tags: ['Fintech Startup', 'Co-Founder', 'Accelerator London', 'Lean Startup']
+    }
+  ],
+
+  skills: [
+    'Enterprise Presales Leadership',
+    'Value Engineering & Business Cases',
+    'FDE Model Design & Hiring',
+    'React / TypeScript Prototyping',
+    'Applied AI (Claude, LLM Ops)',
+    'Banking & Insurance Domain',
+    'RFP / RFI Strategy',
+    'Discovery & Qualification',
+    'PoC Scoping & Delivery',
+    'Prototype-Led Selling',
+    'Jira / Confluence'
+  ],
+
+  education: {
+    degree: 'BA (Hons) Sports Business Management',
+    university: 'London Metropolitan University',
+    note: 'Final year dissertation described by supervisor as "the strongest piece of work I have seen in 7 years of supervising"'
+  },
+
+  articles: [
+    { title: 'The Death of Per-Seat SaaS', url: 'https://substack.com/@futurestart' },
+    { title: 'Results as a Service (RaaS)', url: 'https://substack.com/@futurestart' },
+    { title: 'AI Abundance Economics', url: 'https://substack.com/@futurestart' },
+    { title: 'Agentic AI Distribution Models', url: 'https://substack.com/@futurestart' },
+    { title: 'Looking into the future of FinTech', url: 'https://www.linkedin.com/pulse/looking-future-fintech-merely-following-illusion-byron-levin' }
+  ],
+
+  podcast: {
+    show: 'FintechOS Evolv',
+    episode: 'AI-Powered Product Management: Speed, Innovation & the Future of Banking',
+    host: 'Mark Dearman',
+    description: 'Discussion on AI product engines, breaking free of legacy systems, vibe coding, and agents-as-a-service in banking and insurance.',
+    url: 'https://fintechosevolvpodcast.podbean.com/e/ai-powered-product-management/'
+  },
+
+  achievements: [
+    { icon: '🏆', title: 'AngelHack VR Hackathon — Winner', desc: 'Built a VR exercise and arcade game application' },
+    { icon: '🚀', title: 'Accelerator London — Launchpad Graduate', desc: '12-week lean startup programme · 2016' },
+    { icon: '🎓', title: 'Strongest dissertation in 7 years', desc: 'Supervisor quote — London Metropolitan University' }
+  ],
+
+  markets: [
+    { region: 'United Kingdom', status: 'Primary' },
+    { region: 'Western Europe', status: 'Active' },
+    { region: 'Eastern Europe', status: 'Active' }
+  ]
+};
+/* ═══════════════════ END CONFIG ═══════════════════ */
+
+
 document.addEventListener('DOMContentLoaded', function () {
 
-  // ── Scroll reveal (IntersectionObserver) ──
-  var revealEls = document.querySelectorAll('.reveal');
-  if (revealEls.length && 'IntersectionObserver' in window) {
-    var observer = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
-    revealEls.forEach(function (el) { observer.observe(el); });
-  } else {
-    revealEls.forEach(function (el) { el.classList.add('visible'); });
+  // ── Render CV from CONFIG ──
+  function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+  function renderCV() {
+    var c = CONFIG;
+    var h = '';
+
+    // Header
+    h += '<header class="cv-header reveal">';
+    h += '<h1>' + esc(c.name) + '</h1>';
+    h += '<p class="subtitle">' + esc(c.title) + ' · ' + esc(c.company) + '</p>';
+    h += '<div class="contact-row">';
+    h += '<span>' + esc(c.location) + '</span>';
+    h += '<a href="mailto:' + esc(c.email) + '">' + esc(c.email) + '</a>';
+    h += '<a href="' + esc(c.linkedin) + '" target="_blank" rel="noopener">LinkedIn</a>';
+    h += '<a href="' + esc(c.substack) + '" target="_blank" rel="noopener">Substack</a>';
+    h += '</div>';
+    h += '<div class="header-chips">';
+    c.chips.forEach(function (ch) { h += '<span class="header-chip">' + esc(ch) + '</span>'; });
+    h += '</div></header>';
+
+    // Metrics
+    h += '<div class="metrics-strip reveal">';
+    c.metrics.forEach(function (m) {
+      h += '<div class="metric-cell"><div class="num">' + esc(m.value) + '</div><div class="label">' + esc(m.label) + '</div></div>';
+    });
+    h += '</div>';
+
+    // Summary
+    h += '<div class="cv-summary reveal">';
+    c.summary.forEach(function (p) { h += '<p>' + esc(p) + '</p>'; });
+    h += '</div>';
+
+    // Loom
+    h += '<a href="' + esc(c.loom.url) + '" class="loom-strip reveal" style="text-decoration:none;color:var(--ink-2)">';
+    h += '<span class="play-icon"></span>';
+    h += '<span style="flex:1">' + esc(c.loom.text) + '</span>';
+    h += '<span class="duration">' + esc(c.loom.duration) + '</span></a>';
+
+    // Two-col body
+    h += '<div class="cv-body"><div class="cv-main">';
+
+    // Experience
+    c.experience.forEach(function (role) {
+      h += '<div class="exp-card reveal"><div class="exp-top">';
+      h += '<span class="exp-title">' + esc(role.title) + '</span>';
+      if (role.badge) h += '<span class="exp-badge">' + esc(role.badge) + '</span>';
+      h += '</div>';
+      h += '<div class="exp-company">' + esc(role.company) + '</div>';
+      h += '<div class="exp-period">' + esc(role.period) + '</div>';
+      if (role.accounts) {
+        h += '<div class="exp-accounts">';
+        role.accounts.forEach(function (a) { h += '<span class="account-chip">' + esc(a) + '</span>'; });
+        h += '</div>';
+      }
+      h += '<p class="exp-desc">' + esc(role.description) + '</p>';
+      if (role.metrics) {
+        h += '<div class="exp-metrics">';
+        role.metrics.forEach(function (m) { h += '<span class="exp-metric">' + esc(m) + '</span>'; });
+        h += '</div>';
+      }
+      if (role.tags) {
+        h += '<div class="exp-tags">';
+        role.tags.forEach(function (t) { h += '<span class="exp-tag">' + esc(t) + '</span>'; });
+        h += '</div>';
+      }
+      h += '</div>';
+    });
+
+    h += '</div>';
+
+    // Sidebar
+    h += '<aside class="sidebar reveal">';
+
+    // Skills
+    h += '<section><h3>Core Skills</h3><ul>';
+    c.skills.forEach(function (s) { h += '<li>' + esc(s) + '</li>'; });
+    h += '</ul></section>';
+
+    // Education
+    h += '<section><h3>Education</h3><div class="edu-block">';
+    h += '<div class="degree">' + esc(c.education.degree) + '</div>';
+    h += '<div class="uni">' + esc(c.education.university) + '</div>';
+    h += '<div class="note">' + esc(c.education.note) + '</div>';
+    h += '</div></section>';
+
+    // Writing
+    h += '<section><h3>Writing — Substack</h3>';
+    h += '<p style="font-size:.8rem;color:var(--ink-3);margin-bottom:.6rem">Future Start — AI, SaaS economics & enterprise software — for fintech and tech-curious readers.</p>';
+    c.articles.forEach(function (a) {
+      h += '<div class="writing-item"><a href="' + esc(a.url) + '" target="_blank" rel="noopener">' + esc(a.title) + '</a></div>';
+    });
+    h += '<a href="' + esc(c.substack) + '" target="_blank" rel="noopener" class="writing-cta">Read on Substack →</a>';
+    h += '</section>';
+
+    // Podcast
+    h += '<section><div class="podcast-card">';
+    h += '<div class="pod-header"><span class="pod-icon">🎙️</span><span class="pod-show">' + esc(c.podcast.show) + '</span></div>';
+    h += '<div class="pod-ep">' + esc(c.podcast.episode) + '</div>';
+    h += '<p class="pod-desc">' + esc(c.podcast.description) + ' Host: ' + esc(c.podcast.host) + '.</p>';
+    h += '<a href="' + esc(c.podcast.url) + '" target="_blank" rel="noopener" class="pod-cta">Listen →</a>';
+    h += '</div></section>';
+
+    // Achievements
+    h += '<section><h3>Achievements</h3>';
+    c.achievements.forEach(function (a) {
+      h += '<div class="achievement-item"><span class="ach-icon">' + a.icon + '</span><div>';
+      h += '<div class="ach-title">' + esc(a.title) + '</div>';
+      h += '<div class="ach-desc">' + esc(a.desc) + '</div>';
+      h += '</div></div>';
+    });
+    h += '</section>';
+
+    // Markets
+    h += '<section><h3>Market Coverage</h3>';
+    c.markets.forEach(function (m) {
+      h += '<div class="market-row"><span class="market-label">' + esc(m.region) + '</span><span class="market-status">' + esc(m.status) + '</span></div>';
+    });
+    h += '</section>';
+
+    h += '</aside></div>';
+
+    var container = document.getElementById('cv-content');
+    if (container) container.innerHTML = h;
   }
+
+  renderCV();
+
+  // ── Scroll reveal (IntersectionObserver) ──
+  var observer;
+  function initReveals() {
+    var revealEls = document.querySelectorAll('.reveal');
+    if (revealEls.length && 'IntersectionObserver' in window) {
+      observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+      revealEls.forEach(function (el) { observer.observe(el); });
+    } else {
+      revealEls.forEach(function (el) { el.classList.add('visible'); });
+    }
+  }
+  initReveals();
 
   // ── Tab switching with fade ──
   var tabs = document.querySelectorAll('.nav-tab');
@@ -719,9 +817,8 @@ document.addEventListener('DOMContentLoaded', function () {
           next.classList.add('active');
           requestAnimationFrame(function () {
             next.style.opacity = '1';
-            // Re-trigger reveals in new view
             next.querySelectorAll('.reveal:not(.visible)').forEach(function (el) {
-              if ('IntersectionObserver' in window) observer.observe(el);
+              if (observer) observer.observe(el);
               else el.classList.add('visible');
             });
           });
@@ -734,11 +831,11 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   // ── Metric counter animation ──
-  var metricNums = document.querySelectorAll('.metric-cell .num');
   var metricsAnimated = false;
   function animateMetrics() {
     if (metricsAnimated) return;
     metricsAnimated = true;
+    var metricNums = document.querySelectorAll('.metric-cell .num');
     metricNums.forEach(function (el) {
       var final = el.textContent;
       var match = final.match(/[\d.]+/);
@@ -762,13 +859,15 @@ document.addEventListener('DOMContentLoaded', function () {
       requestAnimationFrame(step);
     });
   }
-  var metricsStrip = document.querySelector('.metrics-strip');
-  if (metricsStrip && 'IntersectionObserver' in window) {
-    var metricObs = new IntersectionObserver(function (entries) {
-      if (entries[0].isIntersecting) { animateMetrics(); metricObs.disconnect(); }
-    }, { threshold: 0.3 });
-    metricObs.observe(metricsStrip);
-  }
+  setTimeout(function () {
+    var metricsStrip = document.querySelector('.metrics-strip');
+    if (metricsStrip && 'IntersectionObserver' in window) {
+      var metricObs = new IntersectionObserver(function (entries) {
+        if (entries[0].isIntersecting) { animateMetrics(); metricObs.disconnect(); }
+      }, { threshold: 0.3 });
+      metricObs.observe(metricsStrip);
+    }
+  }, 100);
 
   // ── Portfolio filters ──
   var filterBtns = document.querySelectorAll('.filter-btn');
@@ -813,7 +912,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  // ── PDF button ──
+  // ── PDF button (brief) ──
   var pdfBtn = document.getElementById('pdfBtn');
   if (pdfBtn) {
     pdfBtn.addEventListener('click', function () { window.print(); });
