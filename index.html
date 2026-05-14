@@ -171,37 +171,6 @@ a:hover{color:var(--navy)}
 .port-card .card-cta{font-size:.8rem;font-weight:600;color:var(--gold)}
 .port-card .card-cta:hover{color:var(--navy)}
 
-/* ========= CANDIDATE BRIEF ========= */
-.brief-edit-bar{background:var(--navy);color:#fff;padding:.75rem 1.25rem;border-radius:8px;margin-bottom:1.5rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap;font-size:.82rem}
-.brief-edit-bar .edit-note{flex:1;opacity:.7;min-width:200px}
-.brief-edit-bar input{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);color:#fff;font-family:var(--sans);font-size:.82rem;padding:.35rem .65rem;border-radius:4px;width:180px}
-.brief-edit-bar input::placeholder{color:rgba(255,255,255,.5)}
-.brief-edit-bar .pdf-btn{background:var(--gold);color:var(--navy);border:none;font-family:var(--sans);font-size:.8rem;font-weight:600;padding:.4rem 1rem;border-radius:4px;cursor:pointer}
-.brief-edit-bar .pdf-btn:hover{opacity:.9}
-.brief-doc{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:2.5rem;max-width:var(--max-w);margin:0 auto;box-shadow:0 4px 24px rgba(15,32,64,.04)}
-.brief-header{text-align:center;margin-bottom:2rem;padding-bottom:1.5rem;border-bottom:2px solid var(--gold)}
-.brief-header h2{font-family:var(--serif);font-size:1.5rem;font-weight:700;margin-bottom:.25rem}
-.brief-header .brief-subtitle{color:var(--ink-3);font-size:.95rem}
-.brief-header .brief-company{color:var(--gold);font-weight:600}
-.brief-body{display:grid;grid-template-columns:1fr 1fr;gap:2rem}
-.brief-section{margin-bottom:1.5rem}
-.brief-section h3{font-family:var(--serif);font-size:1rem;font-weight:600;color:var(--navy);margin-bottom:.65rem;padding-bottom:.35rem;border-bottom:1px solid var(--border)}
-.brief-section p{font-size:.88rem;color:var(--ink-2);line-height:1.7}
-[contenteditable]{outline:none;border-radius:3px;transition:background .2s}
-[contenteditable]:hover{background:var(--gold-mid)}
-[contenteditable]:focus{background:var(--gold-mid)}
-.insight-box{background:var(--gold-pale);border-left:3px solid var(--gold);border-radius:0 6px 6px 0;padding:.75rem 1rem;margin-top:.75rem;font-size:.85rem;color:var(--ink-2)}
-.model-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem}
-.model-cell{background:var(--gold-pale);border-radius:8px;padding:.85rem;text-align:center}
-.model-cell .model-title{font-weight:600;font-size:.82rem;color:var(--navy);margin-bottom:.25rem}
-.model-cell .model-desc{font-size:.78rem;color:var(--ink-3)}
-.timeline-row{display:flex;gap:1rem;align-items:flex-start;margin-bottom:1rem;padding-bottom:1rem;border-bottom:1px solid var(--border)}
-.timeline-row:last-child{border-bottom:none}
-.timeline-badge{background:var(--navy);color:#fff;font-size:.7rem;font-weight:600;padding:.25rem .6rem;border-radius:4px;white-space:nowrap;flex-shrink:0}
-.timeline-content{font-size:.85rem;color:var(--ink-2)}
-.timeline-content strong{color:var(--ink);display:block;margin-bottom:.15rem}
-.proof-item{display:flex;align-items:flex-start;gap:.5rem;margin-bottom:.65rem;font-size:.85rem;color:var(--ink-2)}
-.proof-item::before{content:'✓';color:var(--green);font-weight:700;flex-shrink:0}
 
 /* ========= EDITOR PANEL ========= */
 .edit-toggle{background:none;border:1px solid rgba(255,255,255,.3);color:#fff;font-family:var(--sans);font-size:.78rem;font-weight:500;padding:.35rem .85rem;border-radius:6px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:.4rem}
@@ -277,10 +246,6 @@ a:hover{color:var(--navy)}
   .cv-body{grid-template-columns:1fr}
   .metrics-strip{grid-template-columns:repeat(3,1fr)}
   .portfolio-grid{grid-template-columns:1fr}
-  .brief-body{grid-template-columns:1fr}
-  .model-grid{grid-template-columns:1fr}
-  .brief-edit-bar{flex-direction:column;align-items:stretch}
-  .brief-edit-bar input{width:100%}
   .nav-inner{flex-direction:column;gap:.5rem}
 }
 @media(max-width:768px){
@@ -301,7 +266,7 @@ a:hover{color:var(--navy)}
 @media print{
   @page{size:A4;margin:12mm 14mm}
   *{transition:none!important;animation:none!important}
-  .site-nav,.loom-strip,.cv-pdf-bar,.editor-overlay,.editor-scrim,.ed-toast,.brief-edit-bar{display:none!important}
+  .site-nav,.loom-strip,.cv-pdf-bar,.editor-overlay,.editor-scrim,.ed-toast{display:none!important}
   .reveal{opacity:1!important;transform:none!important}
   body{background:#fff;line-height:1.4;color:#111}
   .container{max-width:100%;padding:0}
@@ -311,8 +276,7 @@ a:hover{color:var(--navy)}
 /* ── CV print mode ── */
 @media print{
   body[data-print="cv"]{font-size:8.5pt}
-  body[data-print="cv"] .view#portfolio,
-  body[data-print="cv"] .view#brief{display:none!important}
+  body[data-print="cv"] .view#portfolio{display:none!important}
   body[data-print="cv"] .view#cv{display:block!important;opacity:1!important}
 
   body[data-print="cv"] .cv-header{margin-bottom:.8rem;text-align:center}
@@ -367,33 +331,6 @@ a:hover{color:var(--navy)}
   body[data-print="cv"] .market-row{font-size:7pt;padding:2pt 0}
 }
 
-/* ── Brief print mode ── */
-@media print{
-  body[data-print="brief"]{font-size:9pt}
-  body[data-print="brief"] .view#cv,
-  body[data-print="brief"] .view#portfolio{display:none!important}
-  body[data-print="brief"] .view#brief{display:block!important;opacity:1!important}
-
-  body[data-print="brief"] .brief-doc{border:none;box-shadow:none;padding:0;border-radius:0}
-  body[data-print="brief"] .brief-header{margin-bottom:1.2rem;padding-bottom:.8rem}
-  body[data-print="brief"] .brief-header h2{font-size:16pt}
-  body[data-print="brief"] .brief-header .brief-subtitle{font-size:9.5pt}
-  body[data-print="brief"] .brief-body{grid-template-columns:1fr 1fr;gap:1.5rem}
-  body[data-print="brief"] .brief-section{margin-bottom:1rem}
-  body[data-print="brief"] .brief-section h3{font-size:10pt;margin-bottom:.4rem;padding-bottom:.2rem;color:#0F2040}
-  body[data-print="brief"] .brief-section p{font-size:8.5pt;line-height:1.5}
-  body[data-print="brief"] .insight-box{padding:.5rem .75rem;font-size:8pt;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  body[data-print="brief"] .model-grid{gap:.5rem}
-  body[data-print="brief"] .model-cell{padding:.5rem;border-radius:4px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  body[data-print="brief"] .model-cell .model-title{font-size:8pt}
-  body[data-print="brief"] .model-cell .model-desc{font-size:7pt}
-  body[data-print="brief"] .timeline-row{margin-bottom:.5rem;padding-bottom:.5rem}
-  body[data-print="brief"] .timeline-badge{font-size:6.5pt;padding:2pt 5pt;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  body[data-print="brief"] .timeline-content{font-size:8pt}
-  body[data-print="brief"] .timeline-content strong{font-size:8.5pt}
-  body[data-print="brief"] .proof-item{font-size:8pt;margin-bottom:.35rem}
-  body[data-print="brief"] .proof-item::before{color:#1D6030;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-}
 </style>
 </head>
 <body>
@@ -405,7 +342,6 @@ a:hover{color:var(--navy)}
 <div class="nav-tabs">
 <button class="nav-tab active" data-view="cv">CV</button>
 <button class="nav-tab" data-view="portfolio">Portfolio</button>
-<button class="nav-tab" data-view="brief">Candidate Brief</button>
 </div>
 <button class="edit-toggle" id="editToggle">✎ Edit</button>
 </div>
@@ -548,91 +484,6 @@ a:hover{color:var(--navy)}
 
 </div><!-- /portfolio-grid -->
 </div><!-- /portfolio -->
-
-<!-- ======================== CANDIDATE BRIEF VIEW ======================== -->
-<div id="brief" class="view">
-
-<div class="brief-edit-bar reveal" id="briefEditBar">
-<span class="edit-note">Click any highlighted text to edit · fill in company & role · save as PDF</span>
-<input type="text" id="companyInput" placeholder="Company name…">
-<input type="text" id="roleInput" placeholder="Role title…">
-<button class="pdf-btn" id="pdfBtn">↓ Save as PDF</button>
-</div>
-
-<div class="brief-doc reveal">
-<div class="brief-header">
-<h2>Candidate Brief — <span class="brief-company" id="briefCompany">[Company]</span></h2>
-<div class="brief-subtitle">For the role of <span class="brief-company" id="briefRole">[Role Title]</span></div>
-</div>
-
-<div class="brief-body">
-<div class="brief-left">
-
-<div class="brief-section">
-<h3>My Read on Your Challenge</h3>
-<p contenteditable="true">You're scaling a platform sale into complex financial services accounts — banks, insurers, lenders — where the buyer is a CDO or CTO who's seen a hundred vendor decks. The challenge isn't awareness, it's conviction: turning a technically capable platform into a business case that survives CFO scrutiny and procurement cycles that run 6–12 months.</p>
-<div class="insight-box" contenteditable="true">I've run exactly this playbook at FintechOS — prototype-led selling into UK and European financial services, with value cases up to €52M. I know what it takes to win enterprise fintech deals.</div>
-</div>
-
-<div class="brief-section">
-<h3>What I'd Build Here</h3>
-<div class="model-grid">
-<div class="model-cell">
-<div class="model-title" contenteditable="true">Discovery</div>
-<div class="model-desc" contenteditable="true">MEDDIC-adjacent qualification, stakeholder mapping, pain quantification</div>
-</div>
-<div class="model-cell">
-<div class="model-title" contenteditable="true">Demo</div>
-<div class="model-desc" contenteditable="true">Prototype-led selling — deal-specific React builds, not generic slides</div>
-</div>
-<div class="model-cell">
-<div class="model-title" contenteditable="true">Value Case</div>
-<div class="model-desc" contenteditable="true">ROI models built to survive CFO and procurement scrutiny</div>
-</div>
-</div>
-</div>
-
-</div><!-- /brief-left -->
-
-<div class="brief-right">
-
-<div class="brief-section">
-<h3>First 90 Days</h3>
-<div class="timeline-row">
-<span class="timeline-badge" contenteditable="true">0–30</span>
-<div class="timeline-content">
-<strong contenteditable="true">Listen</strong>
-<span contenteditable="true">Sit in on every live deal. Map the pipeline, the objections, and the competitive landscape. Understand what's winning and what's stalling.</span>
-</div>
-</div>
-<div class="timeline-row">
-<span class="timeline-badge" contenteditable="true">31–60</span>
-<div class="timeline-content">
-<strong contenteditable="true">Fix</strong>
-<span contenteditable="true">Rebuild the demo library around prototype-led selling. Stand up a value engineering framework. Identify one Tier 1 deal to personally own.</span>
-</div>
-</div>
-<div class="timeline-row">
-<span class="timeline-badge" contenteditable="true">61–90</span>
-<div class="timeline-content">
-<strong contenteditable="true">Scale</strong>
-<span contenteditable="true">Hire or upskill an FDE. Deploy Claude AI ops across the team. Measure demo build time, win rate, and pipeline velocity.</span>
-</div>
-</div>
-</div>
-
-<div class="brief-section">
-<h3>Proof Points</h3>
-<div class="proof-item" contenteditable="true">Built FDE model from zero at FintechOS</div>
-<div class="proof-item" contenteditable="true">€34–52M value case · 34-req RFI · 100% compliant</div>
-<div class="proof-item" contenteditable="true">6+ live React prototypes — built personally</div>
-<div class="proof-item" contenteditable="true">Claude AI ops stack deployed team-wide</div>
-</div>
-
-</div><!-- /brief-right -->
-</div><!-- /brief-body -->
-</div><!-- /brief-doc -->
-</div><!-- /brief -->
 
 </div><!-- /container -->
 
@@ -1012,32 +863,6 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     });
   });
-
-  // ── Candidate brief: sync inputs to headings ──
-  var companyInput = document.getElementById('companyInput');
-  var roleInput = document.getElementById('roleInput');
-  var briefCompany = document.getElementById('briefCompany');
-  var briefRole = document.getElementById('briefRole');
-
-  if (companyInput && briefCompany) {
-    companyInput.addEventListener('input', function () {
-      briefCompany.textContent = companyInput.value || '[Company]';
-    });
-  }
-  if (roleInput && briefRole) {
-    roleInput.addEventListener('input', function () {
-      briefRole.textContent = roleInput.value || '[Role Title]';
-    });
-  }
-
-  // ── PDF button (brief) ──
-  var pdfBtn = document.getElementById('pdfBtn');
-  if (pdfBtn) {
-    pdfBtn.addEventListener('click', function () {
-      document.body.setAttribute('data-print', 'brief');
-      window.print();
-    });
-  }
 
   // Reset print mode after printing
   window.addEventListener('afterprint', function () {
