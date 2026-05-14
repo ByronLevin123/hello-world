@@ -297,72 +297,102 @@ a:hover{color:var(--navy)}
   .loom-strip{flex-direction:column;align-items:flex-start}
 }
 
-/* ========= PRINT — 1–2 page A4 CV ========= */
+/* ========= PRINT — shared ========= */
 @media print{
   @page{size:A4;margin:12mm 14mm}
   *{transition:none!important;animation:none!important}
-  .site-nav,.view#portfolio,.view#brief,.brief-edit-bar,.loom-strip,.cv-pdf-bar,.editor-overlay,.editor-scrim,.ed-toast{display:none!important}
-  .view#cv{display:block!important;opacity:1!important}
+  .site-nav,.loom-strip,.cv-pdf-bar,.editor-overlay,.editor-scrim,.ed-toast,.brief-edit-bar{display:none!important}
   .reveal{opacity:1!important;transform:none!important}
-  body{background:#fff;font-size:8.5pt;line-height:1.4;color:#111}
+  body{background:#fff;line-height:1.4;color:#111}
   .container{max-width:100%;padding:0}
+  [contenteditable]{background:none!important}
+}
 
-  .cv-header{margin-bottom:.8rem;text-align:center}
-  .cv-header h1{font-size:18pt;margin-bottom:2pt}
-  .cv-header .subtitle{font-size:9pt;margin-bottom:4pt}
-  .cv-header .contact-row{gap:.5rem;font-size:7.5pt;margin-bottom:4pt}
-  .cv-header .contact-row a{color:#234E80}
-  .header-chips{gap:3pt}
-  .header-chip{font-size:6.5pt;padding:1.5pt 6pt;background:#0F2040;color:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+/* ── CV print mode ── */
+@media print{
+  body[data-print="cv"]{font-size:8.5pt}
+  body[data-print="cv"] .view#portfolio,
+  body[data-print="cv"] .view#brief{display:none!important}
+  body[data-print="cv"] .view#cv{display:block!important;opacity:1!important}
 
-  .metrics-strip{grid-template-columns:repeat(5,1fr);gap:6pt;margin-bottom:.7rem}
-  .metric-cell{padding:6pt 4pt;border:1px solid #ddd;border-radius:4px;box-shadow:none;transform:none!important}
-  .metric-cell .num{font-size:12pt}
-  .metric-cell .label{font-size:6pt;margin-top:1pt}
+  body[data-print="cv"] .cv-header{margin-bottom:.8rem;text-align:center}
+  body[data-print="cv"] .cv-header h1{font-size:18pt;margin-bottom:2pt}
+  body[data-print="cv"] .cv-header .subtitle{font-size:9pt;margin-bottom:4pt}
+  body[data-print="cv"] .cv-header .contact-row{gap:.5rem;font-size:7.5pt;margin-bottom:4pt}
+  body[data-print="cv"] .cv-header .contact-row a{color:#234E80}
+  body[data-print="cv"] .header-chips{gap:3pt}
+  body[data-print="cv"] .header-chip{font-size:6.5pt;padding:1.5pt 6pt;background:#0F2040;color:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 
-  .cv-summary{margin-bottom:.6rem}
-  .cv-summary p{font-size:8pt;line-height:1.45;margin-bottom:4pt}
+  body[data-print="cv"] .metrics-strip{grid-template-columns:repeat(5,1fr);gap:6pt;margin-bottom:.7rem}
+  body[data-print="cv"] .metric-cell{padding:6pt 4pt;border:1px solid #ddd;border-radius:4px;box-shadow:none;transform:none!important}
+  body[data-print="cv"] .metric-cell .num{font-size:12pt}
+  body[data-print="cv"] .metric-cell .label{font-size:6pt;margin-top:1pt}
 
-  .cv-body{grid-template-columns:1fr 220px;gap:1rem}
+  body[data-print="cv"] .cv-summary{margin-bottom:.6rem}
+  body[data-print="cv"] .cv-summary p{font-size:8pt;line-height:1.45;margin-bottom:4pt}
 
-  .exp-card{padding:8pt;margin-bottom:6pt;border:1px solid #ddd;border-radius:4px;box-shadow:none;transform:none!important;page-break-inside:avoid}
-  .exp-top{margin-bottom:2pt}
-  .exp-title{font-size:9.5pt}
-  .exp-badge{font-size:6pt;padding:1pt 5pt;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  .exp-company{font-size:7.5pt;margin-bottom:1pt}
-  .exp-period{font-size:7pt;margin-bottom:4pt}
-  .exp-accounts{gap:2pt;margin-bottom:4pt}
-  .account-chip{font-size:6pt;padding:1pt 4pt;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  .exp-desc{font-size:7.5pt;line-height:1.4;margin-bottom:4pt}
-  .exp-metrics{gap:2pt;margin-bottom:4pt}
-  .exp-metric{font-size:6pt;padding:1.5pt 5pt;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  .exp-tags{gap:2pt}
-  .exp-tag{font-size:6pt;padding:1pt 4pt}
+  body[data-print="cv"] .cv-body{grid-template-columns:1fr 220px;gap:1rem}
 
-  .sidebar section{margin-bottom:.6rem}
-  .sidebar h3{font-size:8.5pt;margin-bottom:3pt;color:#0F2040}
-  .sidebar ul li{font-size:7.5pt;margin-bottom:2pt;padding-left:.7rem}
-  .sidebar ul li::before{width:4px;height:4px;top:.5em;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body[data-print="cv"] .exp-card{padding:8pt;margin-bottom:6pt;border:1px solid #ddd;border-radius:4px;box-shadow:none;transform:none!important;page-break-inside:avoid}
+  body[data-print="cv"] .exp-top{margin-bottom:2pt}
+  body[data-print="cv"] .exp-title{font-size:9.5pt}
+  body[data-print="cv"] .exp-badge{font-size:6pt;padding:1pt 5pt;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body[data-print="cv"] .exp-company{font-size:7.5pt;margin-bottom:1pt}
+  body[data-print="cv"] .exp-period{font-size:7pt;margin-bottom:4pt}
+  body[data-print="cv"] .exp-accounts{gap:2pt;margin-bottom:4pt}
+  body[data-print="cv"] .account-chip{font-size:6pt;padding:1pt 4pt;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body[data-print="cv"] .exp-desc{font-size:7.5pt;line-height:1.4;margin-bottom:4pt}
+  body[data-print="cv"] .exp-metrics{gap:2pt;margin-bottom:4pt}
+  body[data-print="cv"] .exp-metric{font-size:6pt;padding:1.5pt 5pt;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body[data-print="cv"] .exp-tags{gap:2pt}
+  body[data-print="cv"] .exp-tag{font-size:6pt;padding:1pt 4pt}
 
-  .edu-block{font-size:7.5pt}
-  .edu-block .note{font-size:7pt;padding-left:4pt;margin-top:2pt}
+  body[data-print="cv"] .sidebar section{margin-bottom:.6rem}
+  body[data-print="cv"] .sidebar h3{font-size:8.5pt;margin-bottom:3pt;color:#0F2040}
+  body[data-print="cv"] .sidebar ul li{font-size:7.5pt;margin-bottom:2pt;padding-left:.7rem}
+  body[data-print="cv"] .sidebar ul li::before{width:4px;height:4px;top:.5em;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body[data-print="cv"] .edu-block{font-size:7.5pt}
+  body[data-print="cv"] .edu-block .note{font-size:7pt;padding-left:4pt;margin-top:2pt}
+  body[data-print="cv"] .writing-item{font-size:7pt;padding:.15rem 0 .15rem .5rem;margin-bottom:2pt;border-left-width:2px}
+  body[data-print="cv"] .writing-item a{color:#111}
+  body[data-print="cv"] .writing-cta{font-size:7pt;margin-top:2pt}
+  body[data-print="cv"] .podcast-card{padding:6pt;border-radius:4px;font-size:7pt;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body[data-print="cv"] .podcast-card .pod-show{font-size:7.5pt}
+  body[data-print="cv"] .podcast-card .pod-ep,.podcast-card .pod-desc{font-size:6.5pt}
+  body[data-print="cv"] .podcast-card .pod-cta{font-size:7pt}
+  body[data-print="cv"] .achievement-item{font-size:7pt;margin-bottom:3pt;gap:3pt}
+  body[data-print="cv"] .achievement-item .ach-icon{font-size:8pt}
+  body[data-print="cv"] .achievement-item .ach-title{font-size:7pt}
+  body[data-print="cv"] .achievement-item .ach-desc{font-size:6.5pt}
+  body[data-print="cv"] .market-row{font-size:7pt;padding:2pt 0}
+}
 
-  .writing-item{font-size:7pt;padding:.15rem 0 .15rem .5rem;margin-bottom:2pt;border-left-width:2px}
-  .writing-item a{color:#111}
-  .writing-cta{font-size:7pt;margin-top:2pt}
+/* ── Brief print mode ── */
+@media print{
+  body[data-print="brief"]{font-size:9pt}
+  body[data-print="brief"] .view#cv,
+  body[data-print="brief"] .view#portfolio{display:none!important}
+  body[data-print="brief"] .view#brief{display:block!important;opacity:1!important}
 
-  .podcast-card{padding:6pt;border-radius:4px;font-size:7pt;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  .podcast-card .pod-show{font-size:7.5pt}
-  .podcast-card .pod-ep{font-size:7pt}
-  .podcast-card .pod-desc{font-size:6.5pt;margin-bottom:2pt}
-  .podcast-card .pod-cta{font-size:7pt}
-
-  .achievement-item{font-size:7pt;margin-bottom:3pt;gap:3pt}
-  .achievement-item .ach-icon{font-size:8pt}
-  .achievement-item .ach-title{font-size:7pt}
-  .achievement-item .ach-desc{font-size:6.5pt}
-
-  .market-row{font-size:7pt;padding:2pt 0}
+  body[data-print="brief"] .brief-doc{border:none;box-shadow:none;padding:0;border-radius:0}
+  body[data-print="brief"] .brief-header{margin-bottom:1.2rem;padding-bottom:.8rem}
+  body[data-print="brief"] .brief-header h2{font-size:16pt}
+  body[data-print="brief"] .brief-header .brief-subtitle{font-size:9.5pt}
+  body[data-print="brief"] .brief-body{grid-template-columns:1fr 1fr;gap:1.5rem}
+  body[data-print="brief"] .brief-section{margin-bottom:1rem}
+  body[data-print="brief"] .brief-section h3{font-size:10pt;margin-bottom:.4rem;padding-bottom:.2rem;color:#0F2040}
+  body[data-print="brief"] .brief-section p{font-size:8.5pt;line-height:1.5}
+  body[data-print="brief"] .insight-box{padding:.5rem .75rem;font-size:8pt;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body[data-print="brief"] .model-grid{gap:.5rem}
+  body[data-print="brief"] .model-cell{padding:.5rem;border-radius:4px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body[data-print="brief"] .model-cell .model-title{font-size:8pt}
+  body[data-print="brief"] .model-cell .model-desc{font-size:7pt}
+  body[data-print="brief"] .timeline-row{margin-bottom:.5rem;padding-bottom:.5rem}
+  body[data-print="brief"] .timeline-badge{font-size:6.5pt;padding:2pt 5pt;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body[data-print="brief"] .timeline-content{font-size:8pt}
+  body[data-print="brief"] .timeline-content strong{font-size:8.5pt}
+  body[data-print="brief"] .proof-item{font-size:8pt;margin-bottom:.35rem}
+  body[data-print="brief"] .proof-item::before{color:#1D6030;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
 </style>
 </head>
@@ -401,7 +431,7 @@ a:hover{color:var(--navy)}
 <div id="cv" class="view active">
 
 <!-- PDF export button (hidden on print) -->
-<div class="cv-pdf-bar"><button class="cv-pdf-btn" onclick="window.print()">↓ Export CV as PDF</button></div>
+<div class="cv-pdf-bar"><button class="cv-pdf-btn" onclick="document.body.setAttribute('data-print','cv');window.print()">↓ Export CV as PDF</button></div>
 
 <!-- CV content rendered from CONFIG below -->
 <div id="cv-content"></div>
@@ -531,8 +561,8 @@ a:hover{color:var(--navy)}
 
 <div class="brief-doc reveal">
 <div class="brief-header">
-<h2>Candidate Brief — <span class="brief-company" id="briefCompany">Byron Levin</span></h2>
-<div class="brief-subtitle">For the role of <span class="brief-company" id="briefRole">Head of Presales</span></div>
+<h2>Candidate Brief — <span class="brief-company" id="briefCompany">[Company]</span></h2>
+<div class="brief-subtitle">For the role of <span class="brief-company" id="briefRole">[Role Title]</span></div>
 </div>
 
 <div class="brief-body">
@@ -548,15 +578,15 @@ a:hover{color:var(--navy)}
 <h3>What I'd Build Here</h3>
 <div class="model-grid">
 <div class="model-cell">
-<div class="model-title">Discovery</div>
+<div class="model-title" contenteditable="true">Discovery</div>
 <div class="model-desc" contenteditable="true">MEDDIC-adjacent qualification, stakeholder mapping, pain quantification</div>
 </div>
 <div class="model-cell">
-<div class="model-title">Demo</div>
+<div class="model-title" contenteditable="true">Demo</div>
 <div class="model-desc" contenteditable="true">Prototype-led selling — deal-specific React builds, not generic slides</div>
 </div>
 <div class="model-cell">
-<div class="model-title">Value Case</div>
+<div class="model-title" contenteditable="true">Value Case</div>
 <div class="model-desc" contenteditable="true">ROI models built to survive CFO and procurement scrutiny</div>
 </div>
 </div>
@@ -569,23 +599,23 @@ a:hover{color:var(--navy)}
 <div class="brief-section">
 <h3>First 90 Days</h3>
 <div class="timeline-row">
-<span class="timeline-badge">0–30</span>
+<span class="timeline-badge" contenteditable="true">0–30</span>
 <div class="timeline-content">
-<strong>Listen</strong>
+<strong contenteditable="true">Listen</strong>
 <span contenteditable="true">Sit in on every live deal. Map the pipeline, the objections, and the competitive landscape. Understand what's winning and what's stalling.</span>
 </div>
 </div>
 <div class="timeline-row">
-<span class="timeline-badge">31–60</span>
+<span class="timeline-badge" contenteditable="true">31–60</span>
 <div class="timeline-content">
-<strong>Fix</strong>
+<strong contenteditable="true">Fix</strong>
 <span contenteditable="true">Rebuild the demo library around prototype-led selling. Stand up a value engineering framework. Identify one Tier 1 deal to personally own.</span>
 </div>
 </div>
 <div class="timeline-row">
-<span class="timeline-badge">61–90</span>
+<span class="timeline-badge" contenteditable="true">61–90</span>
 <div class="timeline-content">
-<strong>Scale</strong>
+<strong contenteditable="true">Scale</strong>
 <span contenteditable="true">Hire or upskill an FDE. Deploy Claude AI ops across the team. Measure demo build time, win rate, and pipeline velocity.</span>
 </div>
 </div>
@@ -593,10 +623,10 @@ a:hover{color:var(--navy)}
 
 <div class="brief-section">
 <h3>Proof Points</h3>
-<div class="proof-item">Built FDE model from zero at FintechOS</div>
-<div class="proof-item">€34–52M value case · 34-req RFI · 100% compliant</div>
-<div class="proof-item">6+ live React prototypes — built personally</div>
-<div class="proof-item">Claude AI ops stack deployed team-wide</div>
+<div class="proof-item" contenteditable="true">Built FDE model from zero at FintechOS</div>
+<div class="proof-item" contenteditable="true">€34–52M value case · 34-req RFI · 100% compliant</div>
+<div class="proof-item" contenteditable="true">6+ live React prototypes — built personally</div>
+<div class="proof-item" contenteditable="true">Claude AI ops stack deployed team-wide</div>
 </div>
 
 </div><!-- /brief-right -->
@@ -991,20 +1021,28 @@ document.addEventListener('DOMContentLoaded', function () {
 
   if (companyInput && briefCompany) {
     companyInput.addEventListener('input', function () {
-      briefCompany.textContent = companyInput.value || 'Byron Levin';
+      briefCompany.textContent = companyInput.value || '[Company]';
     });
   }
   if (roleInput && briefRole) {
     roleInput.addEventListener('input', function () {
-      briefRole.textContent = roleInput.value || 'Head of Presales';
+      briefRole.textContent = roleInput.value || '[Role Title]';
     });
   }
 
   // ── PDF button (brief) ──
   var pdfBtn = document.getElementById('pdfBtn');
   if (pdfBtn) {
-    pdfBtn.addEventListener('click', function () { window.print(); });
+    pdfBtn.addEventListener('click', function () {
+      document.body.setAttribute('data-print', 'brief');
+      window.print();
+    });
   }
+
+  // Reset print mode after printing
+  window.addEventListener('afterprint', function () {
+    document.body.removeAttribute('data-print');
+  });
 
   // ── Editor Panel ──
   var editorPanel = document.getElementById('editorPanel');
