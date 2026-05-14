@@ -259,6 +259,19 @@ a:hover{color:var(--navy)}
 .ed-toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--navy);color:#fff;padding:.6rem 1.2rem;border-radius:8px;font-size:.82rem;font-weight:500;z-index:300;opacity:0;transform:translateY(10px);transition:all .3s;pointer-events:none}
 .ed-toast.show{opacity:1;transform:translateY(0)}
 
+.ed-add-btn{width:100%;padding:.45rem;border:1px dashed var(--border);background:none;font-family:var(--sans);font-size:.78rem;font-weight:500;color:var(--ink-3);border-radius:6px;cursor:pointer;margin-top:.5rem;transition:all .2s}
+.ed-add-btn:hover{border-color:var(--gold);color:var(--gold);background:var(--gold-pale)}
+.ed-del-btn{background:none;border:none;color:var(--ink-3);font-size:.9rem;cursor:pointer;padding:0 .3rem;line-height:1;transition:color .2s;flex-shrink:0;align-self:center}
+.ed-del-btn:hover{color:#c44}
+.ed-row-wrap{display:flex;align-items:center;gap:.35rem;margin-bottom:.5rem}
+.ed-row-wrap .ed-row-fields{flex:1;display:grid;gap:.5rem}
+.ed-row-wrap .ed-row-fields.cols-2{grid-template-columns:100px 1fr}
+.ed-row-wrap .ed-row-fields.cols-2a{grid-template-columns:1fr 1fr}
+.ed-row-wrap .ed-row-fields.cols-3{grid-template-columns:40px 1fr 1fr}
+.ed-row-wrap .ed-row-fields.cols-mr{grid-template-columns:1fr 100px}
+.ed-row-wrap input{padding:.35rem .5rem;border:1px solid var(--border);border-radius:4px;font-family:var(--sans);font-size:.78rem;background:var(--bg)}
+.ed-row-wrap input:focus{outline:none;border-color:var(--gold)}
+
 /* ========= RESPONSIVE ========= */
 @media(max-width:768px){
   .cv-body{grid-template-columns:1fr}
@@ -1043,6 +1056,46 @@ document.addEventListener('DOMContentLoaded', function () {
       + '<div class="editor-section-body">' + content + '</div></div>';
   }
 
+  function delBtn(onclick) {
+    return '<button class="ed-del-btn" onclick="' + onclick + '" title="Delete">×</button>';
+  }
+  function addBtn(label, onclick) {
+    return '<button class="ed-add-btn" onclick="' + onclick + '">+ ' + label + '</button>';
+  }
+
+  function saveAndRebuild() {
+    readFormToConfig();
+    buildEditorForm();
+  }
+
+  // Expose mutators globally so inline onclick can reach them
+  window._edAdd = function (type) {
+    readFormToConfig();
+    switch (type) {
+      case 'metric': CONFIG.metrics.push({ value: '', label: '' }); break;
+      case 'summary': CONFIG.summary.push(''); break;
+      case 'role': CONFIG.experience.push({ title: 'New Role', company: '', period: '', description: '', tags: [] }); break;
+      case 'article': CONFIG.articles.push({ title: '', url: '' }); break;
+      case 'achievement': CONFIG.achievements.push({ icon: '⭐', title: '', desc: '' }); break;
+      case 'market': CONFIG.markets.push({ region: '', status: 'Active' }); break;
+    }
+    buildEditorForm();
+    toast('Added');
+  };
+  window._edDel = function (type, i) {
+    readFormToConfig();
+    switch (type) {
+      case 'metric': CONFIG.metrics.splice(i, 1); break;
+      case 'summary': CONFIG.summary.splice(i, 1); break;
+      case 'role': CONFIG.experience.splice(i, 1); break;
+      case 'article': CONFIG.articles.splice(i, 1); break;
+      case 'achievement': CONFIG.achievements.splice(i, 1); break;
+      case 'market': CONFIG.markets.splice(i, 1); break;
+    }
+    buildEditorForm();
+    toast('Removed');
+  };
+
   function buildEditorForm() {
     if (!editorBody) return;
     var c = CONFIG;
@@ -1068,21 +1121,33 @@ document.addEventListener('DOMContentLoaded', function () {
     // Metrics
     var mh = '<label style="font-size:.72rem;font-weight:600;color:var(--ink-3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:.35rem;display:block">Value / Label</label>';
     c.metrics.forEach(function (m, i) {
-      mh += '<div class="ed-metric-row"><input id="ed-mv-' + i + '" value="' + esc(m.value) + '" placeholder="Value"><input id="ed-ml-' + i + '" value="' + esc(m.label) + '" placeholder="Label"></div>';
+      mh += '<div class="ed-row-wrap"><div class="ed-row-fields cols-2">';
+      mh += '<input id="ed-mv-' + i + '" value="' + esc(m.value) + '" placeholder="Value">';
+      mh += '<input id="ed-ml-' + i + '" value="' + esc(m.label) + '" placeholder="Label">';
+      mh += '</div>' + delBtn('_edDel(&quot;metric&quot;,' + i + ')') + '</div>';
     });
-    h += section('Metrics', 'metrics', mh);
+    mh += addBtn('Add Metric', '_edAdd(&quot;metric&quot;)');
+    h += section('Metrics (' + c.metrics.length + ')', 'metrics', mh);
 
     // Summary
-    h += section('Summary', 'summary',
-      inp('sum0', 'Paragraph 1', c.summary[0], 'textarea')
-      + inp('sum1', 'Paragraph 2', c.summary[1], 'textarea')
-    );
+    var sh = '';
+    c.summary.forEach(function (p, i) {
+      sh += '<div class="ed-row-wrap" style="align-items:flex-start"><div style="flex:1">';
+      sh += inp('sum-' + i, 'Paragraph ' + (i + 1), p, 'textarea');
+      sh += '</div>' + delBtn('_edDel(&quot;summary&quot;,' + i + ')') + '</div>';
+    });
+    sh += addBtn('Add Paragraph', '_edAdd(&quot;summary&quot;)');
+    h += section('Summary (' + c.summary.length + ')', 'summary', sh);
 
     // Experience
     var eh = '';
     c.experience.forEach(function (role, i) {
       eh += '<div class="ed-role' + (i === 0 ? ' expanded' : '') + '">';
-      eh += '<div class="ed-role-header" onclick="this.parentElement.classList.toggle(\'expanded\')"><span>' + esc(role.title) + '</span><span class="role-toggle">▼</span></div>';
+      eh += '<div class="ed-role-header" onclick="this.parentElement.classList.toggle(\'expanded\')">';
+      eh += '<span>' + esc(role.title || 'New Role') + '</span>';
+      eh += '<span style="display:flex;align-items:center;gap:.5rem">';
+      eh += '<span class="role-toggle">▼</span>';
+      eh += '</span></div>';
       eh += '<div class="ed-role-body">';
       eh += inp('role-title-' + i, 'Title', role.title);
       eh += inp('role-badge-' + i, 'Badge (e.g. Current)', role.badge || '');
@@ -1092,8 +1157,10 @@ document.addEventListener('DOMContentLoaded', function () {
       eh += inp('role-desc-' + i, 'Description', role.description, 'textarea');
       eh += inp('role-metrics-' + i, 'Metrics (comma-separated)', (role.metrics || []).join(', '));
       eh += inp('role-tags-' + i, 'Tags (comma-separated)', (role.tags || []).join(', '));
+      eh += '<button class="ed-add-btn" style="background:#fff0f0;border-color:#daa;color:#c44" onclick="_edDel(\'role\',' + i + ')">Delete this role</button>';
       eh += '</div></div>';
     });
+    eh += addBtn('Add Role', '_edAdd(&quot;role&quot;)');
     h += section('Experience (' + c.experience.length + ' roles)', 'experience', eh);
 
     // Skills
@@ -1111,9 +1178,13 @@ document.addEventListener('DOMContentLoaded', function () {
     // Articles
     var ah = '<label style="font-size:.72rem;font-weight:600;color:var(--ink-3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:.35rem;display:block">Title / URL</label>';
     c.articles.forEach(function (a, i) {
-      ah += '<div class="ed-article-row"><input id="ed-art-t-' + i + '" value="' + esc(a.title) + '" placeholder="Title"><input id="ed-art-u-' + i + '" value="' + esc(a.url) + '" placeholder="URL"></div>';
+      ah += '<div class="ed-row-wrap"><div class="ed-row-fields cols-2a">';
+      ah += '<input id="ed-art-t-' + i + '" value="' + esc(a.title) + '" placeholder="Title">';
+      ah += '<input id="ed-art-u-' + i + '" value="' + esc(a.url) + '" placeholder="URL">';
+      ah += '</div>' + delBtn('_edDel(&quot;article&quot;,' + i + ')') + '</div>';
     });
-    h += section('Articles', 'articles', ah);
+    ah += addBtn('Add Article', '_edAdd(&quot;article&quot;)');
+    h += section('Articles (' + c.articles.length + ')', 'articles', ah);
 
     // Podcast
     h += section('Podcast', 'podcast',
@@ -1127,16 +1198,25 @@ document.addEventListener('DOMContentLoaded', function () {
     // Achievements
     var ach = '';
     c.achievements.forEach(function (a, i) {
-      ach += '<div class="ed-achievement-row"><input id="ed-ach-i-' + i + '" value="' + a.icon + '" placeholder="Icon"><input id="ed-ach-t-' + i + '" value="' + esc(a.title) + '" placeholder="Title"><input id="ed-ach-d-' + i + '" value="' + esc(a.desc) + '" placeholder="Description"></div>';
+      ach += '<div class="ed-row-wrap"><div class="ed-row-fields cols-3">';
+      ach += '<input id="ed-ach-i-' + i + '" value="' + a.icon + '" placeholder="Icon">';
+      ach += '<input id="ed-ach-t-' + i + '" value="' + esc(a.title) + '" placeholder="Title">';
+      ach += '<input id="ed-ach-d-' + i + '" value="' + esc(a.desc) + '" placeholder="Description">';
+      ach += '</div>' + delBtn('_edDel(&quot;achievement&quot;,' + i + ')') + '</div>';
     });
-    h += section('Achievements', 'achievements', ach);
+    ach += addBtn('Add Achievement', '_edAdd(&quot;achievement&quot;)');
+    h += section('Achievements (' + c.achievements.length + ')', 'achievements', ach);
 
     // Markets
     var mkh = '<label style="font-size:.72rem;font-weight:600;color:var(--ink-3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:.35rem;display:block">Region / Status</label>';
     c.markets.forEach(function (m, i) {
-      mkh += '<div class="ed-market-row"><input id="ed-mk-r-' + i + '" value="' + esc(m.region) + '" placeholder="Region"><input id="ed-mk-s-' + i + '" value="' + esc(m.status) + '" placeholder="Status"></div>';
+      mkh += '<div class="ed-row-wrap"><div class="ed-row-fields cols-mr">';
+      mkh += '<input id="ed-mk-r-' + i + '" value="' + esc(m.region) + '" placeholder="Region">';
+      mkh += '<input id="ed-mk-s-' + i + '" value="' + esc(m.status) + '" placeholder="Status">';
+      mkh += '</div>' + delBtn('_edDel(&quot;market&quot;,' + i + ')') + '</div>';
     });
-    h += section('Markets', 'markets', mkh);
+    mkh += addBtn('Add Market', '_edAdd(&quot;market&quot;)');
+    h += section('Markets (' + c.markets.length + ')', 'markets', mkh);
 
     // Loom
     h += section('Loom Video', 'loom',
@@ -1161,25 +1241,40 @@ document.addEventListener('DOMContentLoaded', function () {
     CONFIG.substack = val('substack');
     CONFIG.chips = csvArr('chips');
 
-    CONFIG.metrics.forEach(function (m, i) {
-      m.value = val('mv-' + i);
-      m.label = val('ml-' + i);
-    });
+    var newMetrics = [];
+    for (var mi = 0; mi < 50; mi++) {
+      var mv = document.getElementById('ed-mv-' + mi);
+      if (!mv) break;
+      newMetrics.push({ value: mv.value, label: val('ml-' + mi) });
+    }
+    if (newMetrics.length) CONFIG.metrics = newMetrics;
 
-    CONFIG.summary = [val('sum0'), val('sum1')];
+    var newSummary = [];
+    for (var si = 0; si < 50; si++) {
+      var se = document.getElementById('ed-sum-' + si);
+      if (!se) break;
+      newSummary.push(se.value);
+    }
+    if (newSummary.length) CONFIG.summary = newSummary;
 
-    CONFIG.experience.forEach(function (role, i) {
-      role.title = val('role-title-' + i);
-      role.badge = val('role-badge-' + i) || undefined;
-      role.company = val('role-company-' + i);
-      role.period = val('role-period-' + i);
-      var acc = val('role-accounts-' + i);
-      role.accounts = acc ? acc.split(',').map(function (s) { return s.trim(); }).filter(Boolean) : undefined;
-      role.description = val('role-desc-' + i);
-      var met = val('role-metrics-' + i);
-      role.metrics = met ? met.split(',').map(function (s) { return s.trim(); }).filter(Boolean) : undefined;
-      role.tags = csvArr('role-tags-' + i);
-    });
+    var newExp = [];
+    for (var ei = 0; ei < 50; ei++) {
+      var et = document.getElementById('ed-role-title-' + ei);
+      if (!et) break;
+      var acc = val('role-accounts-' + ei);
+      var met = val('role-metrics-' + ei);
+      newExp.push({
+        title: et.value,
+        badge: val('role-badge-' + ei) || undefined,
+        company: val('role-company-' + ei),
+        period: val('role-period-' + ei),
+        accounts: acc ? acc.split(',').map(function (s) { return s.trim(); }).filter(Boolean) : undefined,
+        description: val('role-desc-' + ei),
+        metrics: met ? met.split(',').map(function (s) { return s.trim(); }).filter(Boolean) : undefined,
+        tags: csvArr('role-tags-' + ei)
+      });
+    }
+    if (newExp.length) CONFIG.experience = newExp;
 
     CONFIG.skills = val('skills').split('\n').map(function (s) { return s.trim(); }).filter(Boolean);
 
@@ -1187,10 +1282,13 @@ document.addEventListener('DOMContentLoaded', function () {
     CONFIG.education.university = val('edu-uni');
     CONFIG.education.note = val('edu-note');
 
-    CONFIG.articles.forEach(function (a, i) {
-      a.title = val('art-t-' + i);
-      a.url = val('art-u-' + i);
-    });
+    var newArt = [];
+    for (var ai = 0; ai < 50; ai++) {
+      var at = document.getElementById('ed-art-t-' + ai);
+      if (!at) break;
+      newArt.push({ title: at.value, url: val('art-u-' + ai) });
+    }
+    if (newArt.length) CONFIG.articles = newArt;
 
     CONFIG.podcast.show = val('pod-show');
     CONFIG.podcast.episode = val('pod-ep');
@@ -1198,16 +1296,21 @@ document.addEventListener('DOMContentLoaded', function () {
     CONFIG.podcast.description = val('pod-desc');
     CONFIG.podcast.url = val('pod-url');
 
-    CONFIG.achievements.forEach(function (a, i) {
-      a.icon = val('ach-i-' + i);
-      a.title = val('ach-t-' + i);
-      a.desc = val('ach-d-' + i);
-    });
+    var newAch = [];
+    for (var aci = 0; aci < 50; aci++) {
+      var aci_el = document.getElementById('ed-ach-i-' + aci);
+      if (!aci_el) break;
+      newAch.push({ icon: aci_el.value, title: val('ach-t-' + aci), desc: val('ach-d-' + aci) });
+    }
+    if (newAch.length) CONFIG.achievements = newAch;
 
-    CONFIG.markets.forEach(function (m, i) {
-      m.region = val('mk-r-' + i);
-      m.status = val('mk-s-' + i);
-    });
+    var newMk = [];
+    for (var mki = 0; mki < 50; mki++) {
+      var mkr = document.getElementById('ed-mk-r-' + mki);
+      if (!mkr) break;
+      newMk.push({ region: mkr.value, status: val('mk-s-' + mki) });
+    }
+    if (newMk.length) CONFIG.markets = newMk;
 
     CONFIG.loom.text = val('loom-text');
     CONFIG.loom.duration = val('loom-dur');
