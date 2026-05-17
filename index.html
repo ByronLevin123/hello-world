@@ -81,10 +81,12 @@ a:hover{color:var(--navy)}
 .loom-strip .play-icon::after{content:'';border-left:10px solid #fff;border-top:6px solid transparent;border-bottom:6px solid transparent;margin-left:2px}
 .loom-strip .duration{background:var(--navy);color:#fff;font-size:.7rem;font-weight:600;padding:.15rem .5rem;border-radius:100px;white-space:nowrap}
 
+/* STRIP-START */
 /* PDF BUTTON (CV) */
 .cv-pdf-bar{text-align:right;margin-bottom:1.5rem}
 .cv-pdf-btn{background:var(--navy);color:#fff;border:none;font-family:var(--sans);font-size:.8rem;font-weight:600;padding:.5rem 1.25rem;border-radius:6px;cursor:pointer;transition:background .2s}
 .cv-pdf-btn:hover{background:var(--navy-light)}
+/* STRIP-END */
 
 /* TWO-COL CV */
 .cv-body{display:grid;grid-template-columns:1fr 300px;gap:2.5rem}
@@ -172,6 +174,7 @@ a:hover{color:var(--navy)}
 .port-card .card-cta:hover{color:var(--navy)}
 
 
+/* STRIP-START */
 /* ========= EDITOR PANEL ========= */
 .edit-toggle{background:none;border:1px solid rgba(255,255,255,.3);color:#fff;font-family:var(--sans);font-size:.78rem;font-weight:500;padding:.35rem .85rem;border-radius:6px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:.4rem}
 .edit-toggle:hover{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.5)}
@@ -240,6 +243,7 @@ a:hover{color:var(--navy)}
 .ed-row-wrap .ed-row-fields.cols-mr{grid-template-columns:1fr 100px}
 .ed-row-wrap input{padding:.35rem .5rem;border:1px solid var(--border);border-radius:4px;font-family:var(--sans);font-size:.78rem;background:var(--bg)}
 .ed-row-wrap input:focus{outline:none;border-color:var(--gold)}
+/* STRIP-END */
 
 /* ========= RESPONSIVE ========= */
 @media(max-width:768px){
@@ -248,9 +252,11 @@ a:hover{color:var(--navy)}
   .portfolio-grid{grid-template-columns:1fr}
   .nav-inner{flex-direction:column;gap:.5rem}
 }
+/* STRIP-START */
 @media(max-width:768px){
   .editor-overlay{width:100%}
 }
+/* STRIP-END */
 @media(max-width:480px){
   .cv-header h1{font-size:1.6rem}
   .metrics-strip{grid-template-columns:repeat(2,1fr)}
@@ -343,10 +349,11 @@ a:hover{color:var(--navy)}
 <button class="nav-tab active" data-view="cv">CV</button>
 <button class="nav-tab" data-view="portfolio">Portfolio</button>
 </div>
-<button class="edit-toggle" id="editToggle" hidden>✎ Edit</button>
+<!-- STRIP-START --><button class="edit-toggle" id="editToggle" hidden>✎ Edit</button><!-- STRIP-END -->
 </div>
 </nav>
 
+<!-- STRIP-START -->
 <!-- EDITOR PANEL -->
 <div class="editor-scrim" id="editorScrim"></div>
 <div class="editor-overlay" id="editorPanel">
@@ -361,13 +368,14 @@ a:hover{color:var(--navy)}
 <div class="editor-body" id="editorBody"></div>
 </div>
 <div class="ed-toast" id="edToast"></div>
+<!-- STRIP-END -->
 
 <!-- ======================== CV VIEW ======================== -->
 <div class="container">
 <div id="cv" class="view active">
 
 <!-- PDF export button (hidden on print) -->
-<div class="cv-pdf-bar" hidden><button class="cv-pdf-btn" onclick="document.body.setAttribute('data-print','cv');window.print()">↓ Export CV as PDF</button></div>
+<!-- STRIP-START --><div class="cv-pdf-bar" hidden><button class="cv-pdf-btn" onclick="document.body.setAttribute('data-print','cv');window.print()">↓ Export CV as PDF</button></div><!-- STRIP-END -->
 
 <!-- CV content rendered from CONFIG below -->
 <div id="cv-content"></div>
@@ -611,6 +619,7 @@ var CONFIG = {
 
 document.addEventListener('DOMContentLoaded', function () {
 
+  /* STRIP-START */
   // ── Admin mode: Edit + PDF export buttons are hidden by default.
   //    Unlocked on this browser if ANY of:
   //      • hostname is localhost (local development)
@@ -646,6 +655,7 @@ document.addEventListener('DOMContentLoaded', function () {
       reveal();
     });
   })();
+  /* STRIP-END */
 
   // ── Render CV from CONFIG ──
   function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
@@ -899,6 +909,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.body.removeAttribute('data-print');
   });
 
+  /* STRIP-START */
   // ── Editor Panel ──
   var editorPanel = document.getElementById('editorPanel');
   var editorScrim = document.getElementById('editorScrim');
@@ -1245,6 +1256,7 @@ document.addEventListener('DOMContentLoaded', function () {
       toast('Config copied to clipboard');
     }
   });
+  /* STRIP-END */
 });
 </script>
 </body>
