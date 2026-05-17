@@ -611,15 +611,41 @@ var CONFIG = {
 
 document.addEventListener('DOMContentLoaded', function () {
 
-  // ── Admin mode: reveal Edit + PDF export on localhost or ?edit=1 ──
-  var isLocal = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
-  var hasParam = /[?&]edit=1\b/.test(location.search);
-  if (isLocal || hasParam) {
-    var et = document.getElementById('editToggle');
-    if (et) et.hidden = false;
-    var pb = document.querySelector('.cv-pdf-bar');
-    if (pb) pb.hidden = false;
-  }
+  // ── Admin mode: Edit + PDF export buttons are hidden by default.
+  //    Unlocked on this browser if ANY of:
+  //      • hostname is localhost (local development)
+  //      • localStorage.bl_admin === 'yes' (set after first successful unlock)
+  //      • URL has ?admin=<token> where SHA-256(token) matches the hash below
+  //    On successful token unlock, the flag is persisted to localStorage and the
+  //    token is stripped from the URL so it cannot leak via address bar / screenshare.
+  (function () {
+    var EXPECTED_HASH = '336690d12a73c919a1a84ddcf30914d9d7e77694edca5ce4be7ee76790fe1184';
+    function reveal() {
+      var et = document.getElementById('editToggle');
+      if (et) et.hidden = false;
+      var pb = document.querySelector('.cv-pdf-bar');
+      if (pb) pb.hidden = false;
+    }
+    var isLocal = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
+    if (isLocal) { reveal(); return; }
+    try {
+      if (localStorage.getItem('bl_admin') === 'yes') { reveal(); return; }
+    } catch (e) { /* localStorage may be unavailable; fall through */ }
+    var m = location.search.match(/[?&]admin=([^&]+)/);
+    if (!m || !window.crypto || !crypto.subtle) return;
+    var token = decodeURIComponent(m[1]);
+    crypto.subtle.digest('SHA-256', new TextEncoder().encode(token)).then(function (buf) {
+      var hex = Array.prototype.map.call(new Uint8Array(buf), function (b) {
+        return ('0' + b.toString(16)).slice(-2);
+      }).join('');
+      if (hex !== EXPECTED_HASH) return;
+      try { localStorage.setItem('bl_admin', 'yes'); } catch (e) {}
+      var url = new URL(location.href);
+      url.searchParams.delete('admin');
+      history.replaceState({}, '', url.pathname + (url.search ? url.search : '') + url.hash);
+      reveal();
+    });
+  })();
 
   // ── Render CV from CONFIG ──
   function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
