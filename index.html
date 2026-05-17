@@ -81,6 +81,21 @@ a:hover{color:var(--navy)}
 .loom-strip .play-icon::after{content:'';border-left:10px solid #fff;border-top:6px solid transparent;border-bottom:6px solid transparent;margin-left:2px}
 .loom-strip .duration{background:var(--navy);color:#fff;font-size:.7rem;font-weight:600;padding:.15rem .5rem;border-radius:100px;white-space:nowrap}
 
+/* OPEN TO (target roles) */
+.open-to{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--gold);border-radius:8px;padding:1.1rem 1.4rem;margin-bottom:2rem;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+.open-to-label{font-family:var(--sans);font-size:.7rem;font-weight:700;color:var(--ink-3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.6rem}
+.open-to-roles{display:flex;flex-wrap:wrap;gap:.45rem;margin-bottom:.55rem}
+.open-to-role{background:var(--gold-pale);color:var(--navy);font-family:var(--sans);font-size:.82rem;font-weight:500;padding:.35rem .8rem;border-radius:14px;line-height:1.3}
+.open-to-note{font-size:.78rem;color:var(--ink-3);line-height:1.5}
+
+/* SKILL GROUPS */
+.skill-group{margin-bottom:.9rem}
+.skill-group:last-child{margin-bottom:0}
+.skill-group-label{font-family:var(--sans);font-size:.66rem;font-weight:700;color:var(--ink-3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.4rem}
+
+/* CV FOOTER */
+.cv-footer{text-align:center;font-size:.72rem;color:var(--ink-3);margin-top:2.5rem;padding-top:1.25rem;border-top:1px solid var(--border)}
+
 /* STRIP-START */
 /* PDF BUTTON (CV) */
 .cv-pdf-bar{text-align:right;margin-bottom:1.5rem}
@@ -514,6 +529,17 @@ var CONFIG = {
     '£250K+ Deals', 'Prototype-Led Selling', 'CFA Level II'
   ],
 
+  openTo: {
+    roles: [
+      'Global Head / Director of Presales',
+      'Global Head / Director of Forward-Deployed Engineers',
+      'Global Head / Director of Applied AI Engineering / Sales Engineering'
+    ],
+    note: 'Banking, insurance, AI-first enterprise platforms · UK or EU-remote'
+  },
+
+  lastUpdated: 'May 2026',
+
   metrics: [
     { value: '£250K+', label: 'Avg deal size' },
     { value: '€52M',   label: 'Largest value case' },
@@ -529,7 +555,7 @@ var CONFIG = {
   loom: {
     text: '3-min walkthrough: Lifetime Mortgage Origination Prototype — how I build and present a deal-specific working prototype in a live enterprise evaluation',
     duration: '3:12',
-    url: '#'  // ✏️ Replace with Loom URL
+    url: 'https://www.youtube.com/watch?v=tZrzltkxE-M&t=1s'
   },
 
   experience: [
@@ -555,26 +581,23 @@ var CONFIG = {
       description: 'Key member of the team that secured the largest UK deal by revenue, AUA, and geographic scope. Supported sales motions across wealth and asset management technology — pipeline development, stakeholder mapping, proposals, demos, events. Designed and facilitated client discovery workshops to identify requirements and shape tailored solutions; collaborated with product and technology teams to align solutions to prospect needs.',
       tags: ['Wealth Management', 'Asset Management', 'Enterprise SaaS', 'Discovery Workshops', 'Pipeline Development']
     },
-    {
-      title: 'Co-Founder',
-      company: 'The Sporting Movement Ltd · Social Impact Venture',
-      period: 'Jan 2017 – Apr 2018',
-      description: 'Launched a sport-for-development initiative focused on community engagement and wellbeing programmes.',
-      tags: ['Social Impact', 'Co-Founder', 'Sport for Development']
-    }
   ],
 
-  skills: [
+  skillsStrategic: [
     'Solution Sales Leadership',
     'RFP Strategy & Orchestration',
     'Partner & Vendor Management',
     'Executive Storytelling',
-    'Workshop Facilitation',
+    'Workshop Facilitation'
+  ],
+  skillsCommercial: [
     'ROI / Business Case Development',
     'Presales & Demo Design',
     'PoC / PoV Management',
     'Banking & Credit Products',
-    'Digital Onboarding',
+    'Digital Onboarding'
+  ],
+  skillsTechnical: [
     'AI-Powered Product Engines',
     'Loan Origination Platforms',
     'Event-Driven Architecture',
@@ -605,6 +628,7 @@ var CONFIG = {
   achievements: [
     { icon: '🏃', title: 'London Marathon Fundraiser — British Heart Foundation', desc: '2025' },
     { icon: '💡', title: 'Co-Founder, SEI Innovation Forum', desc: 'Internal thought-leadership platform · 2018 – Present' },
+    { icon: '⚽', title: 'Co-Founder, The Sporting Movement Ltd', desc: 'Social-impact venture — sport-for-development programmes · Jan 2017 – Apr 2018' },
     { icon: '🤝', title: 'Community Development Volunteer — Fight 4 Change', desc: 'Sport4Development programmes for at-risk youth · 2015' }
   ],
 
@@ -685,6 +709,17 @@ document.addEventListener('DOMContentLoaded', function () {
     });
     h += '</div>';
 
+    // Open to (target roles)
+    if (c.openTo && c.openTo.roles && c.openTo.roles.length) {
+      h += '<div class="open-to reveal">';
+      h += '<div class="open-to-label">Open to</div>';
+      h += '<div class="open-to-roles">';
+      c.openTo.roles.forEach(function (r) { h += '<span class="open-to-role">' + esc(r) + '</span>'; });
+      h += '</div>';
+      if (c.openTo.note) h += '<div class="open-to-note">' + esc(c.openTo.note) + '</div>';
+      h += '</div>';
+    }
+
     // Summary
     h += '<div class="cv-summary reveal">';
     c.summary.forEach(function (p) { h += '<p>' + esc(p) + '</p>'; });
@@ -731,10 +766,20 @@ document.addEventListener('DOMContentLoaded', function () {
     // Sidebar
     h += '<aside class="sidebar reveal">';
 
-    // Skills
-    h += '<section><h3>Core Skills</h3><ul>';
-    c.skills.forEach(function (s) { h += '<li>' + esc(s) + '</li>'; });
-    h += '</ul></section>';
+    // Skills (grouped: Strategic · Commercial · Technical)
+    h += '<section><h3>Core Skills</h3>';
+    [
+      { label: 'Strategic',  items: c.skillsStrategic  || [] },
+      { label: 'Commercial', items: c.skillsCommercial || [] },
+      { label: 'Technical',  items: c.skillsTechnical  || [] }
+    ].forEach(function (g) {
+      if (!g.items.length) return;
+      h += '<div class="skill-group">';
+      h += '<div class="skill-group-label">' + esc(g.label) + '</div><ul>';
+      g.items.forEach(function (s) { h += '<li>' + esc(s) + '</li>'; });
+      h += '</ul></div>';
+    });
+    h += '</section>';
 
     // Education
     h += '<section><h3>Education</h3><div class="edu-block">';
@@ -778,6 +823,11 @@ document.addEventListener('DOMContentLoaded', function () {
     h += '</section>';
 
     h += '</aside></div>';
+
+    // Footer — last-updated stamp
+    if (c.lastUpdated) {
+      h += '<div class="cv-footer">Updated ' + esc(c.lastUpdated) + '</div>';
+    }
 
     var container = document.getElementById('cv-content');
     if (container) container.innerHTML = h;
@@ -1067,9 +1117,26 @@ document.addEventListener('DOMContentLoaded', function () {
     eh += addBtn('Add Role', '_edAdd(&quot;role&quot;)');
     h += section('Experience (' + c.experience.length + ' roles)', 'experience', eh);
 
-    // Skills
-    h += section('Skills', 'skills',
-      inp('skills', 'One skill per line', c.skills.join('\n'), 'textarea')
+    // Skills (grouped)
+    h += section('Skills — Strategic', 'skills-strategic',
+      inp('skills-strategic', 'One skill per line', (c.skillsStrategic || []).join('\n'), 'textarea')
+    );
+    h += section('Skills — Commercial', 'skills-commercial',
+      inp('skills-commercial', 'One skill per line', (c.skillsCommercial || []).join('\n'), 'textarea')
+    );
+    h += section('Skills — Technical', 'skills-technical',
+      inp('skills-technical', 'One skill per line', (c.skillsTechnical || []).join('\n'), 'textarea')
+    );
+
+    // Open to (target roles)
+    h += section('Open to (target roles)', 'opento',
+      inp('opento-roles', 'One target role per line', ((c.openTo && c.openTo.roles) || []).join('\n'), 'textarea')
+      + inp('opento-note', 'Note (fit / location / domain)', (c.openTo && c.openTo.note) || '', 'textarea')
+    );
+
+    // Last updated
+    h += section('Last updated', 'lastupdated',
+      inp('lastupdated', 'e.g. May 2026', c.lastUpdated || '')
     );
 
     // Education
@@ -1180,7 +1247,17 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     if (newExp.length) CONFIG.experience = newExp;
 
-    CONFIG.skills = val('skills').split('\n').map(function (s) { return s.trim(); }).filter(Boolean);
+    function splitLines(id) {
+      return val(id).split('\n').map(function (s) { return s.trim(); }).filter(Boolean);
+    }
+    CONFIG.skillsStrategic  = splitLines('skills-strategic');
+    CONFIG.skillsCommercial = splitLines('skills-commercial');
+    CONFIG.skillsTechnical  = splitLines('skills-technical');
+    CONFIG.openTo = {
+      roles: splitLines('opento-roles'),
+      note: val('opento-note')
+    };
+    CONFIG.lastUpdated = val('lastupdated');
 
     CONFIG.education.degree = val('edu-degree');
     CONFIG.education.university = val('edu-uni');
