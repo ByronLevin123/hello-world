@@ -343,7 +343,7 @@ a:hover{color:var(--navy)}
 <button class="nav-tab active" data-view="cv">CV</button>
 <button class="nav-tab" data-view="portfolio">Portfolio</button>
 </div>
-<button class="edit-toggle" id="editToggle">✎ Edit</button>
+<button class="edit-toggle" id="editToggle" hidden>✎ Edit</button>
 </div>
 </nav>
 
@@ -367,7 +367,7 @@ a:hover{color:var(--navy)}
 <div id="cv" class="view active">
 
 <!-- PDF export button (hidden on print) -->
-<div class="cv-pdf-bar"><button class="cv-pdf-btn" onclick="document.body.setAttribute('data-print','cv');window.print()">↓ Export CV as PDF</button></div>
+<div class="cv-pdf-bar" hidden><button class="cv-pdf-btn" onclick="document.body.setAttribute('data-print','cv');window.print()">↓ Export CV as PDF</button></div>
 
 <!-- CV content rendered from CONFIG below -->
 <div id="cv-content"></div>
@@ -616,6 +616,16 @@ var CONFIG = {
 
 
 document.addEventListener('DOMContentLoaded', function () {
+
+  // ── Admin mode: reveal Edit + PDF export on localhost or ?edit=1 ──
+  var isLocal = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
+  var hasParam = /[?&]edit=1\b/.test(location.search);
+  if (isLocal || hasParam) {
+    var et = document.getElementById('editToggle');
+    if (et) et.hidden = false;
+    var pb = document.querySelector('.cv-pdf-bar');
+    if (pb) pb.hidden = false;
+  }
 
   // ── Render CV from CONFIG ──
   function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
