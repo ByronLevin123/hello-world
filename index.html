@@ -421,8 +421,8 @@ a:hover{color:var(--navy)}
 <main class="container" id="main">
 <div id="cv" class="view active" role="tabpanel" aria-labelledby="cv-tab">
 
-<!-- Download toolbar (public; hidden on print) -->
-<div class="cv-downloads">
+<!-- Download toolbar (owner-only; revealed in admin mode, hidden on print) -->
+<div class="cv-downloads" id="cvDownloads" hidden>
 <button class="dl-btn" id="dlPdf" type="button">⬇ Download PDF</button>
 <button class="dl-btn secondary" id="dlWord" type="button">⬇ Download Word</button>
 </div>
@@ -701,6 +701,8 @@ document.addEventListener('DOMContentLoaded', function () {
     function reveal() {
       var et = document.getElementById('editToggle');
       if (et) et.hidden = false;
+      var dl = document.getElementById('cvDownloads');
+      if (dl) dl.hidden = false;
     }
     var isLocal = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
     if (isLocal) { reveal(); return; }
