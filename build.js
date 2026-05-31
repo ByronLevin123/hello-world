@@ -42,6 +42,17 @@ if (stray) {
 fs.mkdirSync(OUT_DIR, { recursive: true });
 fs.writeFileSync(OUT, html);
 
+// Copy static production assets through verbatim (skip any that don't exist).
+const STATIC_ASSETS = ['robots.txt', 'sitemap.xml', '404.html'];
+const copied = [];
+for (const asset of STATIC_ASSETS) {
+  const from = path.join(__dirname, asset);
+  if (fs.existsSync(from)) {
+    fs.copyFileSync(from, path.join(OUT_DIR, asset));
+    copied.push(asset);
+  }
+}
+
 const outBytes = Buffer.byteLength(html, 'utf8');
 const savedKB = ((srcBytes - outBytes) / 1024).toFixed(1);
 console.log(
@@ -49,3 +60,4 @@ console.log(
     `${cssJsMatches} CSS/JS block(s), saved ${savedKB}KB ` +
     `(${(srcBytes / 1024).toFixed(1)}KB → ${(outBytes / 1024).toFixed(1)}KB)`
 );
+if (copied.length) console.log(`Copied static asset(s): ${copied.join(', ')}`);

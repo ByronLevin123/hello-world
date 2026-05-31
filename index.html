@@ -3,12 +3,35 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Byron Levin — Head of Presales | Fintech | AI-First Enterprise</title>
-<meta name="description" content="Byron Levin · Head of Presales at FintechOS · Enterprise presales leader, AI-first platforms, banking & insurance, UK & European markets.">
-<meta property="og:title" content="Byron Levin — Head of Presales">
-<meta property="og:description" content="Presales leader, AI-first fintech, prototype-led selling, UK & Europe.">
+<title>Byron Levin — Head of Solution Sales | Fintech | AI-First Banking</title>
+<meta name="description" content="Byron Levin · Head of Solution Sales (Banking) at FintechOS · Enterprise solution sales & presales leader, AI-first platforms, banking & insurance, UK & European markets.">
+<meta name="author" content="Byron Levin">
+<meta name="robots" content="index,follow">
+<meta name="theme-color" content="#0F2040">
+<link rel="canonical" href="https://byronlevin.com">
+<meta property="og:title" content="Byron Levin — Head of Solution Sales, Banking">
+<meta property="og:description" content="Solution sales & presales leader, AI-first fintech, prototype-led selling, UK & Europe.">
 <meta property="og:url" content="https://byronlevin.com">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Byron Levin">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Byron Levin — Head of Solution Sales, Banking">
+<meta name="twitter:description" content="Solution sales & presales leader, AI-first fintech, prototype-led selling, UK & Europe.">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Byron Levin",
+  "jobTitle": "Head of Solution Sales – Banking",
+  "url": "https://byronlevin.com",
+  "email": "mailto:Blevin35@gmail.com",
+  "worksFor": { "@type": "Organization", "name": "FintechOS" },
+  "address": { "@type": "PostalAddress", "addressLocality": "London", "addressCountry": "GB" },
+  "alumniOf": { "@type": "CollegeOrUniversity", "name": "London Metropolitan University" },
+  "knowsAbout": ["Solution Sales", "Presales", "Banking Technology", "Loan Origination", "AI-Powered Product Engines", "Digital Onboarding", "Value Engineering"],
+  "sameAs": ["https://linkedin.com/in/byron-levin-fintech", "https://substack.com/@futurestart"]
+}
+</script>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='4' fill='%230F2040'/><text x='4' y='23' font-family='Georgia,serif' font-size='18' font-weight='bold' fill='%23C4A35A'>BL</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -27,6 +50,19 @@ html{scroll-behavior:smooth}
 body{font-family:var(--sans);background:var(--bg);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased}
 a{color:var(--gold);text-decoration:none;transition:color .2s}
 a:hover{color:var(--navy)}
+
+/* A11Y */
+.skip-link{position:absolute;left:-999px;top:0;z-index:300;background:var(--navy);color:#fff;padding:.6rem 1rem;border-radius:0 0 8px 0;font-size:.85rem;font-weight:600}
+.skip-link:focus{left:0;color:#fff}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.nav-tab:focus-visible,.filter-btn:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+
+/* REDUCED MOTION — respect OS preference */
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
+  .reveal{opacity:1!important;transform:none!important}
+}
 
 /* SCROLL REVEAL */
 .reveal{opacity:0;transform:translateY(24px);transition:opacity .7s cubic-bezier(.16,1,.3,1),transform .7s cubic-bezier(.16,1,.3,1)}
@@ -358,13 +394,15 @@ a:hover{color:var(--navy)}
 </head>
 <body>
 
+<a href="#main" class="skip-link">Skip to content</a>
+
 <!-- NAV -->
-<nav class="site-nav">
+<nav class="site-nav" aria-label="Primary">
 <div class="nav-inner">
 <span class="nav-name">Byron Levin</span>
-<div class="nav-tabs">
-<button class="nav-tab active" data-view="cv">CV</button>
-<button class="nav-tab" data-view="portfolio">Portfolio</button>
+<div class="nav-tabs" role="tablist" aria-label="Sections">
+<button class="nav-tab active" id="cv-tab" data-view="cv" role="tab" aria-selected="true" aria-controls="cv">CV</button>
+<button class="nav-tab" id="portfolio-tab" data-view="portfolio" role="tab" aria-selected="false" aria-controls="portfolio">Portfolio</button>
 </div>
 <!-- STRIP-START --><button class="edit-toggle" id="editToggle" hidden>✎ Edit</button><!-- STRIP-END -->
 </div>
@@ -388,8 +426,8 @@ a:hover{color:var(--navy)}
 <!-- STRIP-END -->
 
 <!-- ======================== CV VIEW ======================== -->
-<div class="container">
-<div id="cv" class="view active">
+<main class="container" id="main">
+<div id="cv" class="view active" role="tabpanel" aria-labelledby="cv-tab">
 
 <!-- PDF export button (hidden on print) -->
 <!-- STRIP-START --><div class="cv-pdf-bar" hidden><button class="cv-pdf-btn" onclick="document.body.setAttribute('data-print','cv');window.print()">↓ Export CV as PDF</button></div><!-- STRIP-END -->
@@ -397,10 +435,29 @@ a:hover{color:var(--navy)}
 <!-- CV content rendered from CONFIG below -->
 <div id="cv-content"></div>
 
+<!-- No-JS / crawler fallback: core content always present in static HTML -->
+<noscript>
+<header class="cv-header">
+<h1>Byron Levin</h1>
+<p class="subtitle">Head of Solution Sales – Banking · FintechOS</p>
+<div class="contact-row">
+<span>London, United Kingdom</span>
+<a href="mailto:Blevin35@gmail.com">Blevin35@gmail.com</a>
+<a href="https://linkedin.com/in/byron-levin-fintech" rel="noopener">LinkedIn</a>
+<a href="https://substack.com/@futurestart" rel="noopener">Substack</a>
+</div>
+</header>
+<div class="cv-summary">
+<p>Banking-focused solution sales and presales leader with end-to-end experience shaping digital onboarding, loan origination, and product-engine transformations. Expert at orchestrating complex RFPs, partner ecosystems, and executive stakeholder management to deliver measurable value across UK/EU banking markets.</p>
+<p><strong>Experience:</strong> Head of Solution Sales – Banking, FintechOS (Sep 2021 – Present); Business Development Consultant, SEI Investments Europe (Sep 2016 – Sep 2021).</p>
+<p><strong>Education:</strong> BA (Hons) Business Management, London Metropolitan University — First Class Honours. CFA Level II in progress.</p>
+</div>
+</noscript>
+
 </div><!-- /cv -->
 
 <!-- ======================== PORTFOLIO VIEW ======================== -->
-<div id="portfolio" class="view">
+<div id="portfolio" class="view" role="tabpanel" aria-labelledby="portfolio-tab">
 
 <div class="portfolio-filters reveal">
 <button class="filter-btn active" data-filter="all">All</button>
@@ -510,7 +567,7 @@ a:hover{color:var(--navy)}
 </div><!-- /portfolio-grid -->
 </div><!-- /portfolio -->
 
-</div><!-- /container -->
+</main><!-- /container -->
 
 <script>
 /* ╔═══════════════════════════════════════════════════════════════════════╗
@@ -854,8 +911,9 @@ document.addEventListener('DOMContentLoaded', function () {
       var next = document.getElementById(target);
       if (!next || next === current) return;
 
-      tabs.forEach(function (t) { t.classList.remove('active'); });
+      tabs.forEach(function (t) { t.classList.remove('active'); t.setAttribute('aria-selected', 'false'); });
       tab.classList.add('active');
+      tab.setAttribute('aria-selected', 'true');
 
       if (current) {
         current.style.opacity = '0';
@@ -879,10 +937,12 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   // ── Metric counter animation ──
+  var prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var metricsAnimated = false;
   function animateMetrics() {
     if (metricsAnimated) return;
     metricsAnimated = true;
+    if (prefersReducedMotion) return; // leave final values in place
     var metricNums = document.querySelectorAll('.metric-cell .num');
     metricNums.forEach(function (el) {
       var final = el.textContent;
