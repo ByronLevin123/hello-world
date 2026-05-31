@@ -334,7 +334,7 @@ a:hover{color:var(--navy)}
 
 /* ── CV print mode ── */
 @media print{
-  body[data-print="cv"]{font-size:8.5pt}
+  body[data-print="cv"]{font-size:8.5pt;-webkit-print-color-adjust:exact;print-color-adjust:exact}
   body[data-print="cv"] .view#portfolio{display:none!important}
   body[data-print="cv"] .view#cv{display:block!important;opacity:1!important}
 
@@ -353,6 +353,23 @@ a:hover{color:var(--navy)}
 
   body[data-print="cv"] .cv-summary{margin-bottom:.6rem}
   body[data-print="cv"] .cv-summary p{font-size:8pt;line-height:1.45;margin-bottom:4pt}
+
+  /* keep the video walkthrough in the PDF (compact) */
+  body[data-print="cv"] .loom-strip{display:flex!important;padding:5pt 8pt;margin-bottom:.7rem;font-size:7pt;gap:6pt;border-radius:0 4px 4px 0;page-break-inside:avoid;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body[data-print="cv"] .loom-strip .play-icon{width:16pt;height:16pt}
+  body[data-print="cv"] .loom-strip .play-icon::after{border-left-width:7pt}
+  body[data-print="cv"] .loom-strip .duration{font-size:6pt;padding:1pt 4pt}
+
+  /* core-skills cards (compact) */
+  body[data-print="cv"] .skills-cards-section{margin-bottom:.6rem}
+  body[data-print="cv"] .skills-cards-section>h2{font-size:11pt;margin-bottom:4pt}
+  body[data-print="cv"] .skills-cards{grid-template-columns:repeat(3,1fr);gap:6pt}
+  body[data-print="cv"] .skill-card{padding:6pt 7pt;border:1px solid #ddd;border-radius:4px;box-shadow:none;transform:none!important;page-break-inside:avoid}
+  body[data-print="cv"] .skill-card-head{margin-bottom:3pt;padding-bottom:3pt;gap:4pt}
+  body[data-print="cv"] .skill-card-icon{width:16pt;height:16pt;font-size:9pt;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body[data-print="cv"] .skill-card-title{font-size:8pt}
+  body[data-print="cv"] .skill-card ul li{font-size:7pt;padding:1pt 0 1pt .7rem}
+  body[data-print="cv"] .skill-card ul li::before{top:.6em;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 
   body[data-print="cv"] .cv-body{grid-template-columns:1fr 220px;gap:1rem}
 
@@ -1020,11 +1037,10 @@ document.addEventListener('DOMContentLoaded', function () {
     document.body.removeAttribute('data-print');
   });
 
-  // ── Downloads: clean single-column CV as PDF + editable Word (.doc) ──
-  // Both formats are built from one ATS-friendly content builder: a single
-  // column, real headings, real bullet lists, no multi-column layout or
-  // chips — so Applicant Tracking Systems parse it reliably. Kept to ~2
-  // pages: profile, core skills, experience, education.
+  // ── Downloads: branded CV as PDF (styled print of the page) + Word (.doc) ──
+  // The PDF prints the actual styled CV page, so it matches the site exactly
+  // (navy/gold, metrics, chips, two-column layout). The Word doc re-creates
+  // the same brand + the same sections using Word-compatible HTML/tables.
   var dlPdf = document.getElementById('dlPdf');
   var dlWord = document.getElementById('dlWord');
 
@@ -1033,98 +1049,157 @@ document.addEventListener('DOMContentLoaded', function () {
       .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   }
 
-  // Shared body content (identical for PDF and Word).
-  function cvDocBody() {
-    var c = CONFIG, e = docEsc, b = '';
-    b += '<h1>' + e(c.name) + '</h1>';
-    b += '<div class="sub">' + e(c.title) + ' &middot; ' + e(c.company) + '</div>';
-    var contact = [c.location, c.email, c.linkedin, c.substack].filter(Boolean).map(e).join('&nbsp;&nbsp;|&nbsp;&nbsp;');
-    b += '<div class="contact">' + contact + '</div>';
+  // PDF: print the styled CV page in compact print mode (matches the site).
+  if (dlPdf) dlPdf.addEventListener('click', function () {
+    var cvTab = document.querySelector('.nav-tab[data-view="cv"]');
+    var switched = cvTab && !cvTab.classList.contains('active');
+    if (switched) cvTab.click();
+    setTimeout(function () {
+      document.body.setAttribute('data-print', 'cv');
+      window.print();
+    }, switched ? 300 : 0);
+  });
 
-    b += '<h2>Profile</h2>';
-    (c.summary || []).forEach(function (p) { b += '<p>' + e(p) + '</p>'; });
-
-    var skills = [].concat(c.skillsStrategic || [], c.skillsCommercial || [], c.skillsTechnical || []);
-    if (skills.length) {
-      b += '<h2>Core Skills</h2><p>' + skills.map(e).join('&nbsp;&middot; ') + '</p>';
-    }
-
-    b += '<h2>Experience</h2>';
-    (c.experience || []).forEach(function (r) {
-      b += '<div class="role"><span class="role-title">' + e(r.title) + '</span>';
-      if (r.period) b += '<span class="role-period">' + e(r.period) + '</span>';
-      b += '</div><div class="role-co">' + e(r.company) + '</div>';
-      if (r.description) b += '<p>' + e(r.description) + '</p>';
-      if ((r.metrics || []).length) {
-        b += '<ul>';
-        r.metrics.forEach(function (m) { b += '<li>' + e(m) + '</li>'; });
-        b += '</ul>';
-      }
-    });
-
-    if (c.education) {
-      b += '<h2>Education</h2><p><b>' + e(c.education.degree) + '</b><br>' + e(c.education.university);
-      if (c.education.note) b += '<br>' + e(c.education.note);
-      b += '</p>';
-    }
-    return b;
-  }
-
-  // Shared typographic CSS. `pageRule` lets PDF and Word set their own page box.
-  function cvDocCSS(pageRule) {
-    return pageRule +
-      'body{font-family:Calibri,"Segoe UI",Arial,sans-serif;font-size:10.5pt;color:#222;line-height:1.42;margin:0}' +
-      'h1{font-size:21pt;margin:0;color:#0F2040;font-weight:700}' +
-      '.sub{font-size:11.5pt;color:#444;margin:3pt 0 5pt}' +
-      '.contact{font-size:9pt;color:#555;margin-bottom:9pt}' +
-      'h2{font-size:11pt;color:#0F2040;border-bottom:1px solid #C4A35A;padding-bottom:2pt;' +
-      'margin:13pt 0 6pt;text-transform:uppercase;letter-spacing:.6pt;font-weight:700}' +
-      '.role{margin-top:6pt}.role-title{font-weight:700;font-size:10.5pt}' +
-      '.role-period{color:#666;font-size:9pt;float:right}' +
-      '.role-co{font-size:9.5pt;color:#555;margin-bottom:3pt}' +
-      '.role,h2,ul{page-break-inside:avoid}' +
-      'p{margin:0 0 6pt}ul{margin:3pt 0 6pt 0;padding-left:18pt}li{margin-bottom:2pt}';
-  }
-
-  function buildPrintHTML() {
-    var css = cvDocCSS('@page{size:A4;margin:14mm 16mm}');
-    return '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>' +
-      docEsc(CONFIG.name) + ' — CV</title><style>' + css + '</style></head><body>' +
-      cvDocBody() + '</body></html>';
-  }
-
+  // Word: build a branded .doc mirroring the site's colours and every section.
+  // Uses tables (reliable in Word) for the metrics row and the two-column body,
+  // and light-background / dark-text "chips" so they stay legible even if a
+  // Word build drops cell shading.
   function buildWordHTML() {
-    var css = cvDocCSS('@page Section1{size:595.3pt 841.9pt;margin:1.5cm 1.7cm}div.Section1{page:Section1}');
+    var c = CONFIG, e = docEsc;
+    var NAVY = '#0F2040', GOLD = '#C4A35A', GOLDP = '#F9F4EA', INK = '#222',
+        INK2 = '#555', INK3 = '#777', BORDER = '#E5E0D8',
+        GREEN = '#1D6030', GREENBG = '#EDFAED', BLUEBG = '#EEF3FB', BLUET = '#234E80';
+
+    function chips(arr, bg, col) {
+      return (arr || []).map(function (x) {
+        return '<span style="background:' + bg + ';color:' + col + ';padding:1.5pt 5pt;font-size:8pt;font-weight:bold;white-space:nowrap;">' + e(x) + '</span>';
+      }).join(' ');
+    }
+    function h2(t) {
+      return '<div style="font-family:Georgia,serif;font-size:11pt;font-weight:bold;color:' + NAVY +
+        ';border-bottom:1.5pt solid ' + GOLD + ';padding-bottom:2pt;margin:12pt 0 6pt;text-transform:uppercase;">' + e(t) + '</div>';
+    }
+
+    // Header
+    var head = '<div style="text-align:center;">' +
+      '<div style="font-family:Georgia,serif;font-size:22pt;font-weight:bold;color:' + NAVY + ';">' + e(c.name) + '</div>' +
+      '<div style="font-size:11pt;color:' + INK2 + ';margin-top:2pt;">' + e(c.title) + ' &middot; ' + e(c.company) + '</div>' +
+      '<div style="font-size:9pt;color:' + INK2 + ';margin-top:4pt;">' +
+        [e(c.location),
+         '<a href="mailto:' + e(c.email) + '" style="color:' + BLUET + ';">' + e(c.email) + '</a>',
+         c.linkedin ? '<a href="' + e(c.linkedin) + '" style="color:' + BLUET + ';">LinkedIn</a>' : '',
+         c.substack ? '<a href="' + e(c.substack) + '" style="color:' + BLUET + ';">Substack</a>' : ''
+        ].filter(Boolean).join(' &nbsp;|&nbsp; ') +
+      '</div>' +
+      (c.chips && c.chips.length ? '<div style="margin-top:5pt;">' + chips(c.chips, GOLDP, NAVY) + '</div>' : '') +
+      '</div>';
+
+    // Metrics row (table)
+    var metrics = '';
+    if (c.metrics && c.metrics.length) {
+      var cells = c.metrics.map(function (m) {
+        return '<td valign="top" style="border:1px solid ' + BORDER + ';padding:6pt 4pt;text-align:center;">' +
+          '<div style="font-family:Georgia,serif;font-size:14pt;font-weight:bold;color:' + NAVY + ';">' + e(m.value) + '</div>' +
+          '<div style="font-size:6.5pt;color:' + INK3 + ';margin-top:1pt;">' + e(m.label) + '</div></td>';
+      }).join('');
+      metrics = '<table width="100%" cellspacing="0" cellpadding="0" style="margin-top:10pt;border-collapse:collapse;"><tr>' + cells + '</tr></table>';
+    }
+
+    // Summary
+    var summary = (c.summary && c.summary.length)
+      ? '<div style="margin-top:10pt;">' + c.summary.map(function (p) {
+          return '<p style="font-size:9.5pt;color:' + INK + ';line-height:1.5;margin:0 0 6pt;">' + e(p) + '</p>';
+        }).join('') + '</div>'
+      : '';
+
+    // Video walkthrough (loom)
+    var loom = (c.loom && c.loom.url)
+      ? '<div style="background:' + GOLDP + ';border-left:3pt solid ' + GOLD + ';padding:6pt 9pt;margin-top:2pt;font-size:8.5pt;color:' + INK2 + ';">' +
+          '&#9658; <b>Video walkthrough' + (c.loom.duration ? ' (' + e(c.loom.duration) + ')' : '') + ':</b> ' +
+          '<a href="' + e(c.loom.url) + '" style="color:' + BLUET + ';">' + e(c.loom.text) + '</a></div>'
+      : '';
+
+    // Left column: Core Skills + Experience
+    function skillGroup(label, items) {
+      if (!items || !items.length) return '';
+      return '<div style="margin-bottom:6pt;"><div style="font-size:9pt;font-weight:bold;color:' + NAVY + ';margin-bottom:1pt;">' + e(label) + '</div>' +
+        '<div style="font-size:8.5pt;color:' + INK + ';line-height:1.5;">' + items.map(e).join(' &middot; ') + '</div></div>';
+    }
+    var left = '';
+    var hasSkills = (c.skillsStrategic || []).length || (c.skillsCommercial || []).length || (c.skillsTechnical || []).length;
+    if (hasSkills) {
+      left += h2('Core Skills') +
+        skillGroup('Strategic', c.skillsStrategic) +
+        skillGroup('Commercial', c.skillsCommercial) +
+        skillGroup('Technical', c.skillsTechnical);
+    }
+    left += h2('Experience') + (c.experience || []).map(function (r) {
+      var s = '<div style="border:1px solid ' + BORDER + ';padding:7pt 9pt;margin-bottom:7pt;">';
+      s += '<table width="100%" cellspacing="0" cellpadding="0"><tr>' +
+        '<td style="font-weight:bold;font-size:10pt;color:' + NAVY + ';">' + e(r.title) +
+        (r.badge ? ' <span style="background:' + GREENBG + ';color:' + GREEN + ';font-size:7pt;padding:1pt 5pt;">' + e(r.badge) + '</span>' : '') + '</td>' +
+        '<td align="right" valign="top" style="font-size:8pt;color:' + INK3 + ';white-space:nowrap;">' + e(r.period || '') + '</td></tr></table>';
+      s += '<div style="font-size:8.5pt;color:' + INK2 + ';margin:1pt 0 3pt;">' + e(r.company) + '</div>';
+      if (r.accounts && r.accounts.length) s += '<div style="margin-bottom:3pt;">' + chips(r.accounts, BLUEBG, BLUET) + '</div>';
+      if (r.description) s += '<p style="font-size:8.5pt;color:' + INK + ';line-height:1.45;margin:0 0 3pt;">' + e(r.description) + '</p>';
+      if (r.metrics && r.metrics.length) s += '<div style="margin-bottom:3pt;">' + chips(r.metrics, GREENBG, GREEN) + '</div>';
+      if (r.tags && r.tags.length) s += '<div style="font-size:7.5pt;color:' + INK3 + ';">' + r.tags.map(e).join(' &middot; ') + '</div>';
+      return s + '</div>';
+    }).join('');
+
+    // Right column (sidebar): Education, Writing, Podcast, Achievements, Markets
+    var right = '';
+    if (c.education) {
+      right += h2('Education') + '<div style="font-size:8.5pt;color:' + INK + ';"><b>' + e(c.education.degree) + '</b><br>' +
+        '<span style="color:' + INK3 + ';">' + e(c.education.university) + '</span>' +
+        (c.education.note ? '<br><span style="font-style:italic;font-size:8pt;color:' + INK2 + ';">' + e(c.education.note) + '</span>' : '') + '</div>';
+    }
+    if (c.articles && c.articles.length) {
+      right += h2('Writing — Substack') + c.articles.map(function (a) {
+        return '<div style="font-size:8pt;border-left:2pt solid ' + GOLD + ';padding-left:5pt;margin-bottom:3pt;"><a href="' + e(a.url) + '" style="color:' + INK + ';">' + e(a.title) + '</a></div>';
+      }).join('') + (c.substack ? '<div style="font-size:8pt;font-weight:bold;margin-top:2pt;"><a href="' + e(c.substack) + '" style="color:' + BLUET + ';">Read on Substack &rarr;</a></div>' : '');
+    }
+    if (c.podcast && c.podcast.show) {
+      right += h2('Podcast') + '<div style="background:#fff;border:1px solid ' + BORDER + ';padding:6pt;font-size:8pt;color:' + INK2 + ';">' +
+        '<div style="font-weight:bold;color:' + INK + ';">' + e(c.podcast.show) + '</div>' +
+        '<div style="font-weight:bold;color:' + INK + ';margin:1pt 0;">' + e(c.podcast.episode) + '</div>' +
+        '<div style="color:' + INK3 + ';">' + e(c.podcast.description) + (c.podcast.host ? ' Host: ' + e(c.podcast.host) + '.' : '') + '</div>' +
+        (c.podcast.url ? '<div style="margin-top:2pt;"><a href="' + e(c.podcast.url) + '" style="color:' + BLUET + ';font-weight:bold;">Listen &rarr;</a></div>' : '') + '</div>';
+    }
+    if (c.achievements && c.achievements.length) {
+      right += h2('Achievements') + c.achievements.map(function (a) {
+        return '<div style="font-size:8pt;margin-bottom:3pt;"><b>' + e(a.title) + '</b>' +
+          (a.desc ? '<br><span style="color:' + INK3 + ';">' + e(a.desc) + '</span>' : '') + '</div>';
+      }).join('');
+    }
+    if (c.markets && c.markets.length) {
+      right += h2('Market Coverage') + '<table width="100%" cellspacing="0" cellpadding="0">' + c.markets.map(function (m) {
+        return '<tr><td style="font-size:8pt;color:' + INK2 + ';padding:2pt 0;border-bottom:0.5pt solid ' + BORDER + ';">' + e(m.region) + '</td>' +
+          '<td align="right" style="font-size:8pt;color:' + INK3 + ';border-bottom:0.5pt solid ' + BORDER + ';">' + e(m.status) + '</td></tr>';
+      }).join('') + '</table>';
+    }
+
+    var body2col = '<table width="100%" cellspacing="0" cellpadding="0" style="margin-top:6pt;"><tr>' +
+      '<td width="62%" valign="top" style="padding-right:12pt;">' + left + '</td>' +
+      '<td width="38%" valign="top" style="background:' + GOLDP + ';padding:8pt;">' + right + '</td>' +
+      '</tr></table>';
+
+    var footer = c.lastUpdated
+      ? '<div style="text-align:center;font-size:7pt;color:' + INK3 + ';margin-top:10pt;border-top:0.5pt solid ' + BORDER + ';padding-top:5pt;">Updated ' + e(c.lastUpdated) + '</div>'
+      : '';
+
+    var inner = head + metrics + summary + loom + body2col + footer;
+
     return '<!DOCTYPE html><html xmlns:o="urn:schemas-microsoft-com:office:office" ' +
       'xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">' +
-      '<head><meta charset="utf-8"><title>' + docEsc(CONFIG.name) + ' — CV</title>' +
+      '<head><meta charset="utf-8"><title>' + e(c.name) + ' — CV</title>' +
       '<!--[if gte mso 9]><xml><w:WordDocument><w:View>Print</w:View>' +
       '<w:Zoom>100</w:Zoom><w:DoNotOptimizeForBrowser/></w:WordDocument></xml><![endif]-->' +
-      '<style>' + css + '</style></head><body><div class="Section1">' + cvDocBody() + '</div></body></html>';
+      '<style>@page Section1{size:595.3pt 841.9pt;margin:1.2cm 1.3cm}div.Section1{page:Section1}' +
+      'body{font-family:Calibri,"Segoe UI",Arial,sans-serif;color:#222;margin:0}' +
+      'a{text-decoration:none}table{border-collapse:collapse}</style></head>' +
+      '<body><div class="Section1">' + inner + '</div></body></html>';
   }
-
-  // PDF: render the clean doc inside an off-screen iframe and print just that
-  // frame, so the styled web page is untouched and the PDF is single-column.
-  if (dlPdf) dlPdf.addEventListener('click', function () {
-    var old = document.getElementById('pdfFrame');
-    if (old) old.remove();
-    var iframe = document.createElement('iframe');
-    iframe.id = 'pdfFrame';
-    iframe.setAttribute('aria-hidden', 'true');
-    iframe.style.cssText = 'position:fixed;right:0;bottom:0;width:0;height:0;border:0;opacity:0';
-    document.body.appendChild(iframe);
-    var d = iframe.contentWindow.document;
-    d.open();
-    d.write(buildPrintHTML());
-    d.close();
-    var win = iframe.contentWindow;
-    var cleanup = function () { setTimeout(function () { if (iframe.parentNode) iframe.parentNode.removeChild(iframe); }, 500); };
-    win.onafterprint = cleanup;
-    setTimeout(function () {
-      try { win.focus(); win.print(); } catch (e) { window.print(); }
-      setTimeout(cleanup, 60000); // fallback cleanup if afterprint never fires
-    }, 350);
-  });
 
   if (dlWord) dlWord.addEventListener('click', function () {
     var blob = new Blob(['﻿', buildWordHTML()], { type: 'application/msword' });
