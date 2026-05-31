@@ -22,6 +22,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+/* Make the [hidden] attribute authoritative — it must beat explicit
+   display rules (e.g. display:flex on .edit-toggle / .cv-downloads),
+   otherwise the admin-gated controls leak to public visitors. */
+[hidden]{display:none!important}
 :root{
 --navy:#0F2040;--navy-light:#1A3055;--gold:#C4A35A;--gold-pale:#F9F4EA;
 --gold-mid:rgba(196,163,90,.25);--bg:#F8F6F2;--surface:#FFFFFF;
