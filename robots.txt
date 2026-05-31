@@ -1,4 +1,3 @@
+# This site is private — share by link only, not for public indexing.
 User-agent: *
-Allow: /
-
-Sitemap: https://byronlevin.com/sitemap.xml
+Disallow: /

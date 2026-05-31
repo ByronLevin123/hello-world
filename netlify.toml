@@ -8,3 +8,5 @@
     X-Frame-Options = "DENY"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
+    # Keep the site out of search engines — it is shared by link only.
+    X-Robots-Tag = "noindex, nofollow, noarchive, nosnippet"

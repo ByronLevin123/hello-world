@@ -6,9 +6,8 @@
 <title>Byron Levin — Head of Solution Sales | Fintech | AI-First Banking</title>
 <meta name="description" content="Byron Levin · Head of Solution Sales (Banking) at FintechOS · Enterprise solution sales & presales leader, AI-first platforms, banking & insurance, UK & European markets.">
 <meta name="author" content="Byron Levin">
-<meta name="robots" content="index,follow">
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
 <meta name="theme-color" content="#0F2040">
-<link rel="canonical" href="https://byronlevin.com">
 <meta property="og:title" content="Byron Levin — Head of Solution Sales, Banking">
 <meta property="og:description" content="Solution sales & presales leader, AI-first fintech, prototype-led selling, UK & Europe.">
 <meta property="og:url" content="https://byronlevin.com">
@@ -17,21 +16,6 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Byron Levin — Head of Solution Sales, Banking">
 <meta name="twitter:description" content="Solution sales & presales leader, AI-first fintech, prototype-led selling, UK & Europe.">
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Person",
-  "name": "Byron Levin",
-  "jobTitle": "Head of Solution Sales – Banking",
-  "url": "https://byronlevin.com",
-  "email": "mailto:Blevin35@gmail.com",
-  "worksFor": { "@type": "Organization", "name": "FintechOS" },
-  "address": { "@type": "PostalAddress", "addressLocality": "London", "addressCountry": "GB" },
-  "alumniOf": { "@type": "CollegeOrUniversity", "name": "London Metropolitan University" },
-  "knowsAbout": ["Solution Sales", "Presales", "Banking Technology", "Loan Origination", "AI-Powered Product Engines", "Digital Onboarding", "Value Engineering"],
-  "sameAs": ["https://linkedin.com/in/byron-levin-fintech", "https://substack.com/@futurestart"]
-}
-</script>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='4' fill='%230F2040'/><text x='4' y='23' font-family='Georgia,serif' font-size='18' font-weight='bold' fill='%23C4A35A'>BL</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -133,6 +117,14 @@ a:hover{color:var(--navy)}
 
 /* CV FOOTER */
 .cv-footer{text-align:center;font-size:.72rem;color:var(--ink-3);margin-top:2.5rem;padding-top:1.25rem;border-top:1px solid var(--border)}
+
+/* DOWNLOAD TOOLBAR (public) */
+.cv-downloads{display:flex;justify-content:flex-end;gap:.6rem;margin-bottom:1.5rem;flex-wrap:wrap}
+.dl-btn{display:inline-flex;align-items:center;gap:.4rem;background:var(--navy);color:#fff;border:1px solid var(--navy);font-family:var(--sans);font-size:.8rem;font-weight:600;padding:.55rem 1.15rem;border-radius:8px;cursor:pointer;transition:transform .2s ease,background .2s ease}
+.dl-btn:hover{background:var(--navy-light);transform:translateY(-2px)}
+.dl-btn.secondary{background:var(--surface);color:var(--navy)}
+.dl-btn.secondary:hover{background:var(--gold-pale)}
+@media(max-width:480px){.cv-downloads{justify-content:stretch}.dl-btn{flex:1;justify-content:center}}
 
 /* STRIP-START */
 /* PDF BUTTON (CV) */
@@ -325,7 +317,7 @@ a:hover{color:var(--navy)}
 @media print{
   @page{size:A4;margin:12mm 14mm}
   *{transition:none!important;animation:none!important}
-  .site-nav,.loom-strip,.cv-pdf-bar,.editor-overlay,.editor-scrim,.ed-toast{display:none!important}
+  .site-nav,.loom-strip,.cv-pdf-bar,.cv-downloads,.editor-overlay,.editor-scrim,.ed-toast,.skip-link{display:none!important}
   .reveal{opacity:1!important;transform:none!important}
   body{background:#fff;line-height:1.4;color:#111}
   .container{max-width:100%;padding:0}
@@ -429,8 +421,11 @@ a:hover{color:var(--navy)}
 <main class="container" id="main">
 <div id="cv" class="view active" role="tabpanel" aria-labelledby="cv-tab">
 
-<!-- PDF export button (hidden on print) -->
-<!-- STRIP-START --><div class="cv-pdf-bar" hidden><button class="cv-pdf-btn" onclick="document.body.setAttribute('data-print','cv');window.print()">↓ Export CV as PDF</button></div><!-- STRIP-END -->
+<!-- Download toolbar (public; hidden on print) -->
+<div class="cv-downloads">
+<button class="dl-btn" id="dlPdf" type="button">⬇ Download PDF</button>
+<button class="dl-btn secondary" id="dlWord" type="button">⬇ Download Word</button>
+</div>
 
 <!-- CV content rendered from CONFIG below -->
 <div id="cv-content"></div>
@@ -702,12 +697,10 @@ document.addEventListener('DOMContentLoaded', function () {
   //    On successful token unlock, the flag is persisted to localStorage and the
   //    token is stripped from the URL so it cannot leak via address bar / screenshare.
   (function () {
-    var EXPECTED_HASH = '336690d12a73c919a1a84ddcf30914d9d7e77694edca5ce4be7ee76790fe1184';
+    var EXPECTED_HASH = 'bb0e092e9dcd8e24109bead02f9c3922ddf4fc234531e123fa1900469364aa2b';
     function reveal() {
       var et = document.getElementById('editToggle');
       if (et) et.hidden = false;
-      var pb = document.querySelector('.cv-pdf-bar');
-      if (pb) pb.hidden = false;
     }
     var isLocal = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
     if (isLocal) { reveal(); return; }
@@ -1006,6 +999,100 @@ document.addEventListener('DOMContentLoaded', function () {
   // Reset print mode after printing
   window.addEventListener('afterprint', function () {
     document.body.removeAttribute('data-print');
+  });
+
+  // ── Downloads: PDF (print) + editable Word (.doc) ──
+  var dlPdf = document.getElementById('dlPdf');
+  var dlWord = document.getElementById('dlWord');
+
+  if (dlPdf) dlPdf.addEventListener('click', function () {
+    // Ensure the CV tab is showing, then print in compact 2-page CV mode.
+    var cvTab = document.querySelector('.nav-tab[data-view="cv"]');
+    if (cvTab && !cvTab.classList.contains('active')) cvTab.click();
+    setTimeout(function () {
+      document.body.setAttribute('data-print', 'cv');
+      window.print();
+    }, cvTab && !cvTab.classList.contains('active') ? 260 : 0);
+  });
+
+  // Build a clean, ATS-friendly Word document from CONFIG (opens & edits in
+  // Word/Pages/Google Docs). Kept to ~2 pages: profile, skills, experience,
+  // education. Uses Word-compatible HTML so no external library is needed.
+  function buildWordHTML() {
+    var c = CONFIG;
+    function e(s) {
+      return String(s == null ? '' : s)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+    var b = '';
+    b += '<h1>' + e(c.name) + '</h1>';
+    b += '<div class="sub">' + e(c.title) + ' &middot; ' + e(c.company) + '</div>';
+    var contact = [c.location, c.email, c.linkedin, c.substack].filter(Boolean).map(e).join('&nbsp;&nbsp;|&nbsp;&nbsp;');
+    b += '<div class="contact">' + contact + '</div>';
+
+    b += '<h2>Profile</h2>';
+    (c.summary || []).forEach(function (p) { b += '<p>' + e(p) + '</p>'; });
+
+    var skills = [].concat(c.skillsStrategic || [], c.skillsCommercial || [], c.skillsTechnical || []);
+    if (skills.length) {
+      b += '<h2>Core Skills</h2><p>' + skills.map(e).join('&nbsp;&middot; ') + '</p>';
+    }
+
+    b += '<h2>Experience</h2>';
+    (c.experience || []).forEach(function (r) {
+      b += '<div class="role">';
+      b += '<span class="role-title">' + e(r.title) + '</span>';
+      if (r.period) b += '<span class="role-period">' + e(r.period) + '</span>';
+      b += '</div>';
+      b += '<div class="role-co">' + e(r.company) + '</div>';
+      if (r.description) b += '<p>' + e(r.description) + '</p>';
+      var bullets = (r.metrics || []);
+      if (bullets.length) {
+        b += '<ul>';
+        bullets.forEach(function (m) { b += '<li>' + e(m) + '</li>'; });
+        b += '</ul>';
+      }
+    });
+
+    if (c.education) {
+      b += '<h2>Education</h2>';
+      b += '<p><b>' + e(c.education.degree) + '</b><br>' + e(c.education.university);
+      if (c.education.note) b += '<br>' + e(c.education.note);
+      b += '</p>';
+    }
+
+    var css =
+      'body{font-family:Calibri,Arial,sans-serif;font-size:10.5pt;color:#222;line-height:1.42}' +
+      'h1{font-size:21pt;margin:0;color:#0F2040;font-weight:700}' +
+      '.sub{font-size:11.5pt;color:#444;margin:3pt 0 5pt}' +
+      '.contact{font-size:9pt;color:#555;margin-bottom:9pt}' +
+      'h2{font-size:11pt;color:#0F2040;border-bottom:1px solid #C4A35A;padding-bottom:2pt;' +
+      'margin:13pt 0 6pt;text-transform:uppercase;letter-spacing:.6pt;font-weight:700}' +
+      '.role{margin-top:6pt}.role-title{font-weight:700;font-size:10.5pt}' +
+      '.role-period{color:#666;font-size:9pt;float:right}' +
+      '.role-co{font-size:9.5pt;color:#555;margin-bottom:3pt}' +
+      'p{margin:0 0 6pt}ul{margin:3pt 0 6pt 0;padding-left:18pt}li{margin-bottom:2pt}';
+
+    return '<!DOCTYPE html><html xmlns:o="urn:schemas-microsoft-com:office:office" ' +
+      'xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">' +
+      '<head><meta charset="utf-8"><title>' + e(c.name) + ' — CV</title>' +
+      '<!--[if gte mso 9]><xml><w:WordDocument><w:View>Print</w:View>' +
+      '<w:Zoom>100</w:Zoom><w:DoNotOptimizeForBrowser/></w:WordDocument></xml><![endif]-->' +
+      '<style>@page Section1{size:595.3pt 841.9pt;margin:1.5cm 1.7cm}div.Section1{page:Section1}' +
+      css + '</style></head><body><div class="Section1">' + b + '</div></body></html>';
+  }
+
+  if (dlWord) dlWord.addEventListener('click', function () {
+    var html = buildWordHTML();
+    var blob = new Blob(['﻿', html], { type: 'application/msword' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = (CONFIG.name || 'CV').replace(/\s+/g, '_') + '_CV.doc';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(url); }, 1500);
   });
 
   /* STRIP-START */
