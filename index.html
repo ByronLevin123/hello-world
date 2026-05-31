@@ -455,6 +455,7 @@ a:hover{color:var(--navy)}
 <div class="cv-downloads" id="cvDownloads" hidden>
 <button class="dl-btn" id="dlPdf" type="button">⬇ Download PDF</button>
 <button class="dl-btn secondary" id="dlWord" type="button">⬇ Download Word</button>
+<button class="dl-btn secondary" id="dlPlain" type="button" title="Clean single-column version for application-tracking systems">⬇ Plain (ATS)</button>
 </div>
 
 <!-- CV content rendered from CONFIG below -->
@@ -1043,6 +1044,7 @@ document.addEventListener('DOMContentLoaded', function () {
   // the same brand + the same sections using Word-compatible HTML/tables.
   var dlPdf = document.getElementById('dlPdf');
   var dlWord = document.getElementById('dlWord');
+  var dlPlain = document.getElementById('dlPlain');
 
   function docEsc(s) {
     return String(s == null ? '' : s)
@@ -1201,17 +1203,84 @@ document.addEventListener('DOMContentLoaded', function () {
       '<body><div class="Section1">' + inner + '</div></body></html>';
   }
 
-  if (dlWord) dlWord.addEventListener('click', function () {
-    var blob = new Blob(['﻿', buildWordHTML()], { type: 'application/msword' });
+  // Plain, ATS-friendly Word doc: single column, no colour/tables/chips, real
+  // headings + bullet lists so application-tracking parsers read it cleanly.
+  // Includes the same content as the site, flattened to text.
+  function buildPlainHTML() {
+    var c = CONFIG, e = docEsc, b = '';
+    b += '<h1>' + e(c.name) + '</h1>';
+    b += '<p class="role">' + e(c.title) + ' — ' + e(c.company) + '</p>';
+    var contact = [c.location, c.email, c.linkedin, c.substack].filter(Boolean).map(e).join('  |  ');
+    b += '<p class="contact">' + contact + '</p>';
+
+    b += '<h2>Profile</h2>';
+    (c.summary || []).forEach(function (p) { b += '<p>' + e(p) + '</p>'; });
+
+    var sk = [].concat(c.skillsStrategic || [], c.skillsCommercial || [], c.skillsTechnical || []);
+    if (sk.length) b += '<h2>Core Skills</h2><p>' + sk.map(e).join(' • ') + '</p>';
+
+    b += '<h2>Experience</h2>';
+    (c.experience || []).forEach(function (r) {
+      b += '<p class="job"><b>' + e(r.title) + '</b>' + (r.period ? ', ' + e(r.period) : '') + '<br>' + e(r.company) + '</p>';
+      if (r.accounts && r.accounts.length) b += '<p class="meta">Key accounts: ' + r.accounts.map(e).join(', ') + '</p>';
+      if (r.description) b += '<p>' + e(r.description) + '</p>';
+      var pts = (r.metrics || []);
+      if (pts.length) { b += '<ul>'; pts.forEach(function (m) { b += '<li>' + e(m) + '</li>'; }); b += '</ul>'; }
+      if (r.tags && r.tags.length) b += '<p class="meta">Focus: ' + r.tags.map(e).join(', ') + '</p>';
+    });
+
+    if (c.education) {
+      b += '<h2>Education</h2><p><b>' + e(c.education.degree) + '</b><br>' + e(c.education.university);
+      if (c.education.note) b += '<br>' + e(c.education.note);
+      b += '</p>';
+    }
+    if (c.articles && c.articles.length) {
+      b += '<h2>Selected Writing</h2><ul>';
+      c.articles.forEach(function (a) { b += '<li>' + e(a.title) + (a.url ? ' (' + e(a.url) + ')' : '') + '</li>'; });
+      b += '</ul>';
+    }
+    if (c.podcast && c.podcast.show) {
+      b += '<h2>Speaking</h2><p>' + e(c.podcast.show) + ' — ' + e(c.podcast.episode) +
+        (c.podcast.url ? ' (' + e(c.podcast.url) + ')' : '') + '</p>';
+    }
+    if (c.achievements && c.achievements.length) {
+      b += '<h2>Achievements</h2><ul>';
+      c.achievements.forEach(function (a) { b += '<li>' + e(a.title) + (a.desc ? ' — ' + e(a.desc) : '') + '</li>'; });
+      b += '</ul>';
+    }
+    if (c.markets && c.markets.length) {
+      b += '<h2>Market Coverage</h2><p>' + c.markets.map(function (m) { return e(m.region) + ' (' + e(m.status) + ')'; }).join(', ') + '</p>';
+    }
+
+    var css = '@page Section1{size:595.3pt 841.9pt;margin:1.6cm 1.8cm}div.Section1{page:Section1}' +
+      'body{font-family:Calibri,Arial,sans-serif;font-size:11pt;color:#000;line-height:1.4}' +
+      'h1{font-size:18pt;margin:0 0 2pt}h2{font-size:12pt;margin:12pt 0 4pt;border-bottom:1px solid #000;padding-bottom:1pt}' +
+      '.role{font-size:12pt;margin:0 0 2pt}.contact{font-size:10pt;color:#333;margin:0 0 8pt}' +
+      '.job{margin:6pt 0 2pt}.meta{font-size:10pt;color:#333;margin:0 0 3pt}' +
+      'p{margin:0 0 6pt}ul{margin:2pt 0 6pt 0;padding-left:20pt}li{margin-bottom:2pt}';
+
+    return '<!DOCTYPE html><html xmlns:o="urn:schemas-microsoft-com:office:office" ' +
+      'xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">' +
+      '<head><meta charset="utf-8"><title>' + e(c.name) + ' — CV</title>' +
+      '<!--[if gte mso 9]><xml><w:WordDocument><w:View>Print</w:View>' +
+      '<w:Zoom>100</w:Zoom><w:DoNotOptimizeForBrowser/></w:WordDocument></xml><![endif]-->' +
+      '<style>' + css + '</style></head><body><div class="Section1">' + b + '</div></body></html>';
+  }
+
+  function downloadDoc(html, suffix) {
+    var blob = new Blob(['﻿', html], { type: 'application/msword' });
     var url = URL.createObjectURL(blob);
     var a = document.createElement('a');
     a.href = url;
-    a.download = (CONFIG.name || 'CV').replace(/\s+/g, '_') + '_CV.doc';
+    a.download = (CONFIG.name || 'CV').replace(/\s+/g, '_') + suffix + '.doc';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     setTimeout(function () { URL.revokeObjectURL(url); }, 1500);
-  });
+  }
+
+  if (dlWord) dlWord.addEventListener('click', function () { downloadDoc(buildWordHTML(), '_CV'); });
+  if (dlPlain) dlPlain.addEventListener('click', function () { downloadDoc(buildPlainHTML(), '_CV_ATS'); });
 
   /* STRIP-START */
   // ── Editor Panel ──
