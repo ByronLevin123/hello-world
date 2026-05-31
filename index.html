@@ -224,6 +224,9 @@ a:hover{color:var(--navy)}
 .edit-toggle{background:none;border:1px solid rgba(255,255,255,.3);color:#fff;font-family:var(--sans);font-size:.78rem;font-weight:500;padding:.35rem .85rem;border-radius:6px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:.4rem}
 .edit-toggle:hover{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.5)}
 .edit-toggle.active{background:var(--gold);color:var(--navy);border-color:var(--gold)}
+.nav-admin{display:flex;gap:.5rem;align-items:center}
+.edit-toggle.lock{border-color:rgba(255,255,255,.25);color:rgba(255,255,255,.75)}
+.edit-toggle.lock:hover{background:rgba(255,255,255,.1);color:#fff;border-color:rgba(255,255,255,.5)}
 
 .editor-overlay{position:fixed;top:0;right:0;bottom:0;width:400px;background:var(--surface);border-left:1px solid var(--border);z-index:200;transform:translateX(100%);transition:transform .35s cubic-bezier(.16,1,.3,1);overflow-y:auto;box-shadow:-8px 0 32px rgba(0,0,0,.08)}
 .editor-overlay.open{transform:translateX(0)}
@@ -396,7 +399,10 @@ a:hover{color:var(--navy)}
 <button class="nav-tab active" id="cv-tab" data-view="cv" role="tab" aria-selected="true" aria-controls="cv">CV</button>
 <button class="nav-tab" id="portfolio-tab" data-view="portfolio" role="tab" aria-selected="false" aria-controls="portfolio">Portfolio</button>
 </div>
-<!-- STRIP-START --><button class="edit-toggle" id="editToggle" hidden>✎ Edit</button><!-- STRIP-END -->
+<div class="nav-admin">
+<button class="edit-toggle" id="editToggle" hidden>✎ Edit</button>
+<button class="edit-toggle lock" id="adminLock" hidden title="Lock this browser back to view-only">🔒 Exit edit mode</button>
+</div>
 </div>
 </nav>
 
@@ -703,6 +709,8 @@ document.addEventListener('DOMContentLoaded', function () {
       if (et) et.hidden = false;
       var dl = document.getElementById('cvDownloads');
       if (dl) dl.hidden = false;
+      var lk = document.getElementById('adminLock');
+      if (lk) lk.hidden = false;
     }
     var isLocal = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
     if (isLocal) { reveal(); return; }
@@ -1132,6 +1140,18 @@ document.addEventListener('DOMContentLoaded', function () {
   });
   if (editorClose) editorClose.addEventListener('click', closeEditor);
   if (editorScrim) editorScrim.addEventListener('click', closeEditor);
+
+  // ── Exit edit mode: lock this browser back to view-only ──
+  var adminLock = document.getElementById('adminLock');
+  if (adminLock) adminLock.addEventListener('click', function () {
+    try { localStorage.removeItem('bl_admin'); } catch (e) {}
+    closeEditor();
+    ['editToggle', 'cvDownloads', 'adminLock'].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) el.hidden = true;
+    });
+    toast('View-only mode — reopen the admin link to edit again');
+  });
 
   function inp(id, label, val, type) {
     type = type || 'text';
