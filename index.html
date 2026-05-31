@@ -27,7 +27,7 @@
    otherwise the admin-gated controls leak to public visitors. */
 [hidden]{display:none!important}
 :root{
---navy:#0F2040;--navy-light:#1A3055;--gold:#C4A35A;--gold-pale:#F9F4EA;
+--navy:#0F2040;--navy-light:#1A3055;--gold:#C4A35A;--gold-text:#7E6420;--gold-pale:#F9F4EA;
 --gold-mid:rgba(196,163,90,.25);--bg:#F8F6F2;--surface:#FFFFFF;
 --ink:#111111;--ink-2:#444444;--ink-3:#888888;--border:#E5E0D8;
 --green:#1D6030;--green-bg:#EDFAED;--blue-bg:#EEF3FB;--blue-txt:#234E80;
@@ -36,7 +36,7 @@
 }
 html{scroll-behavior:smooth}
 body{font-family:var(--sans);background:var(--bg);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased}
-a{color:var(--gold);text-decoration:none;transition:color .2s}
+a{color:var(--gold-text);text-decoration:none;transition:color .2s}
 a:hover{color:var(--navy)}
 
 /* A11Y */
@@ -82,7 +82,7 @@ a:hover{color:var(--navy)}
 .cv-header h1{font-family:var(--serif);font-size:2.75rem;font-weight:700;margin-bottom:.35rem;letter-spacing:-.02em}
 .cv-header .subtitle{color:var(--ink-2);font-size:1.1rem;margin-bottom:1rem}
 .cv-header .contact-row{display:flex;flex-wrap:wrap;justify-content:center;gap:.75rem;font-size:.85rem;color:var(--ink-3);margin-bottom:1rem}
-.cv-header .contact-row a{color:var(--gold);font-weight:500}
+.cv-header .contact-row a{color:var(--gold-text);font-weight:500}
 .header-chips{display:flex;flex-wrap:wrap;justify-content:center;gap:.5rem}
 .header-chip{background:var(--navy);color:#fff;font-size:.75rem;font-weight:500;padding:.3rem .85rem;border-radius:100px;transition:transform .2s ease,background .2s ease}
 .header-chip:hover{background:var(--navy-light);transform:translateY(-1px)}
@@ -172,8 +172,8 @@ a:hover{color:var(--navy)}
 /* WRITING */
 .writing-item{border-left:3px solid var(--gold);padding:.4rem 0 .4rem .75rem;margin-bottom:.45rem;font-size:.82rem}
 .writing-item a{color:var(--ink);font-weight:500}
-.writing-item a:hover{color:var(--gold)}
-.writing-cta{display:inline-block;font-size:.82rem;font-weight:600;color:var(--gold);margin-top:.35rem}
+.writing-item a:hover{color:var(--gold-text)}
+.writing-cta{display:inline-block;font-size:.82rem;font-weight:600;color:var(--gold-text);margin-top:.35rem}
 
 /* PODCAST */
 .podcast-card{background:var(--gold-pale);border-radius:12px;padding:1.15rem;font-size:.82rem;color:var(--ink-2);transition:transform .3s cubic-bezier(.16,1,.3,1),box-shadow .3s ease}
@@ -183,7 +183,7 @@ a:hover{color:var(--navy)}
 .podcast-card .pod-show{font-weight:600;color:var(--ink)}
 .podcast-card .pod-ep{font-weight:500;color:var(--ink);margin-bottom:.25rem}
 .podcast-card .pod-desc{font-size:.78rem;color:var(--ink-3);margin-bottom:.5rem}
-.podcast-card .pod-cta{font-weight:600;color:var(--gold)}
+.podcast-card .pod-cta{font-weight:600;color:var(--gold-text)}
 
 /* ACHIEVEMENTS */
 .achievement-item{display:flex;gap:.5rem;margin-bottom:.6rem;font-size:.82rem;color:var(--ink-2)}
@@ -211,16 +211,13 @@ a:hover{color:var(--navy)}
 .port-card .card-status{font-size:.7rem;font-weight:600;padding:.2rem .6rem;border-radius:100px}
 .port-card .card-status.live{background:var(--green-bg);color:var(--green)}
 .port-card .card-status.poc{background:var(--blue-bg);color:var(--blue-txt)}
-.port-card .card-status.internal{background:var(--gold-pale);color:var(--gold)}
+.port-card .card-status.internal{background:var(--gold-pale);color:var(--gold-text)}
 .port-card h3{font-family:var(--serif);font-size:1rem;font-weight:600;margin-bottom:.2rem}
 .port-card .card-client{font-size:.8rem;color:var(--ink-3);margin-bottom:.65rem}
 .port-card .card-desc{font-size:.85rem;color:var(--ink-2);margin-bottom:.65rem;flex:1}
 .port-card .card-impact{font-size:.82rem;color:var(--ink-2);font-style:italic;border-left:3px solid var(--gold);padding-left:.75rem;margin-bottom:.75rem}
 .port-card .card-pills{display:flex;flex-wrap:wrap;gap:.35rem;margin-bottom:.75rem}
 .port-card .pill{background:var(--gold-pale);color:var(--ink-2);font-size:.7rem;font-weight:500;padding:.2rem .55rem;border-radius:4px}
-.port-card .card-ctas{display:flex;gap:.75rem}
-.port-card .card-cta{font-size:.8rem;font-weight:600;color:var(--gold)}
-.port-card .card-cta:hover{color:var(--navy)}
 
 
 /* STRIP-START */
@@ -248,6 +245,10 @@ a:hover{color:var(--navy)}
 .editor-btn.primary:hover{background:var(--navy-light)}
 .editor-btn.secondary{background:var(--gold-pale);color:var(--ink)}
 .editor-btn.secondary:hover{background:var(--gold-mid)}
+.editor-btn.ghost{flex:0 0 auto;background:none;border:1px solid var(--border);color:var(--ink-3)}
+.editor-btn.ghost:hover{border-color:#c44;color:#c44}
+.editor-note{font-size:.72rem;color:var(--ink-3);line-height:1.45;padding:.6rem 1.25rem 0}
+.editor-note strong{color:var(--ink-2)}
 
 .editor-body{padding:1.25rem}
 .editor-section{margin-bottom:1.5rem;border-bottom:1px solid var(--border);padding-bottom:1rem}
@@ -421,7 +422,9 @@ a:hover{color:var(--navy)}
 <div class="editor-actions">
 <button class="editor-btn primary" id="edApply">Apply Changes</button>
 <button class="editor-btn secondary" id="edCopyConfig">Copy Config</button>
+<button class="editor-btn ghost" id="edReset" title="Discard local edits and restore the published version">Reset</button>
 </div>
+<p class="editor-note">Edits are saved <strong>in this browser only</strong>. To publish them for everyone, click <strong>Copy Config</strong> and commit the result (or send it to your developer).</p>
 <div class="editor-body" id="editorBody"></div>
 </div>
 <div class="ed-toast" id="edToast"></div>
@@ -487,10 +490,6 @@ a:hover{color:var(--navy)}
 <div class="card-pills">
 <span class="pill">React</span><span class="pill">FintechOS</span><span class="pill">UK Mortgage Rules</span><span class="pill">FCA</span>
 </div>
-<div class="card-ctas">
-<!-- ✏️ Replace with demo link --><a href="#" class="card-cta">View Demo ↗</a>
-<!-- ✏️ Replace with deal context link --><a href="#" class="card-cta">Deal Context</a>
-</div>
 </div>
 
 <!-- Card 2 -->
@@ -505,10 +504,6 @@ a:hover{color:var(--navy)}
 <div class="card-impact">Demonstrates 40–60% reduction in manual document review time, with auditable AI reasoning for regulatory comfort.</div>
 <div class="card-pills">
 <span class="pill">LLM Integration</span><span class="pill">React</span><span class="pill">Document AI</span><span class="pill">FintechOS</span>
-</div>
-<div class="card-ctas">
-<!-- ✏️ Replace with demo link --><a href="#" class="card-cta">View Demo ↗</a>
-<!-- ✏️ Replace with deal context link --><a href="#" class="card-cta">Deal Context</a>
 </div>
 </div>
 
@@ -525,10 +520,6 @@ a:hover{color:var(--navy)}
 <div class="card-pills">
 <span class="pill">React SPA</span><span class="pill">CRUD</span><span class="pill">Waiver Workflows</span><span class="pill">AWS Architecture</span>
 </div>
-<div class="card-ctas">
-<!-- ✏️ Replace with demo link --><a href="#" class="card-cta">View Demo ↗</a>
-<!-- ✏️ Replace with deal context link --><a href="#" class="card-cta">Deal Context</a>
-</div>
 </div>
 
 <!-- Card 4 -->
@@ -544,10 +535,6 @@ a:hover{color:var(--navy)}
 <div class="card-pills">
 <span class="pill">KYB / KYC</span><span class="pill">Companies House</span><span class="pill">Open Banking</span><span class="pill">Risk Scoring</span>
 </div>
-<div class="card-ctas">
-<!-- ✏️ Replace with spec link --><a href="#" class="card-cta">View Spec ↗</a>
-<!-- ✏️ Replace with deal context link --><a href="#" class="card-cta">Deal Context</a>
-</div>
 </div>
 
 <!-- Card 5 (full-width) -->
@@ -562,10 +549,6 @@ a:hover{color:var(--navy)}
 <div class="card-impact">Reduced demo build time ~60% across the team. Every new hire onboards with a structured playbook rather than tribal knowledge.</div>
 <div class="card-pills">
 <span class="pill">Claude AI</span><span class="pill">Confluence</span><span class="pill">Jira</span><span class="pill">React</span><span class="pill">Prompt Engineering</span><span class="pill">Value Engineering</span>
-</div>
-<div class="card-ctas">
-<!-- ✏️ Replace with playbook link --><a href="#" class="card-cta">View Playbook ↗</a>
-<!-- ✏️ Replace with methodology link --><a href="#" class="card-cta">Methodology Overview</a>
 </div>
 </div>
 
@@ -886,6 +869,28 @@ document.addEventListener('DOMContentLoaded', function () {
     if (container) container.innerHTML = h;
   }
 
+  // ── Owner-only local draft ──
+  // Edits are not saved to a server — they live in this browser until you
+  // "Copy Config" and commit. To avoid silently losing work on refresh, the
+  // owner's edits are persisted to localStorage and restored on load. Public
+  // visitors never load a draft, so they always see the published CONFIG.
+  var DRAFT_KEY = 'bl_cv_draft';
+  function isOwner() {
+    if (/^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname)) return true;
+    try { return localStorage.getItem('bl_admin') === 'yes'; } catch (e) { return false; }
+  }
+  function loadDraft() {
+    if (!isOwner()) return;
+    try {
+      var raw = localStorage.getItem(DRAFT_KEY);
+      if (raw) CONFIG = JSON.parse(raw);
+    } catch (e) { /* corrupt draft — ignore and use published CONFIG */ }
+  }
+  function saveDraft() {
+    try { localStorage.setItem(DRAFT_KEY, JSON.stringify(CONFIG)); } catch (e) {}
+  }
+
+  loadDraft();
   renderCV();
 
   // ── Scroll reveal (IntersectionObserver) ──
@@ -1015,30 +1020,22 @@ document.addEventListener('DOMContentLoaded', function () {
     document.body.removeAttribute('data-print');
   });
 
-  // ── Downloads: PDF (print) + editable Word (.doc) ──
+  // ── Downloads: clean single-column CV as PDF + editable Word (.doc) ──
+  // Both formats are built from one ATS-friendly content builder: a single
+  // column, real headings, real bullet lists, no multi-column layout or
+  // chips — so Applicant Tracking Systems parse it reliably. Kept to ~2
+  // pages: profile, core skills, experience, education.
   var dlPdf = document.getElementById('dlPdf');
   var dlWord = document.getElementById('dlWord');
 
-  if (dlPdf) dlPdf.addEventListener('click', function () {
-    // Ensure the CV tab is showing, then print in compact 2-page CV mode.
-    var cvTab = document.querySelector('.nav-tab[data-view="cv"]');
-    if (cvTab && !cvTab.classList.contains('active')) cvTab.click();
-    setTimeout(function () {
-      document.body.setAttribute('data-print', 'cv');
-      window.print();
-    }, cvTab && !cvTab.classList.contains('active') ? 260 : 0);
-  });
+  function docEsc(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
 
-  // Build a clean, ATS-friendly Word document from CONFIG (opens & edits in
-  // Word/Pages/Google Docs). Kept to ~2 pages: profile, skills, experience,
-  // education. Uses Word-compatible HTML so no external library is needed.
-  function buildWordHTML() {
-    var c = CONFIG;
-    function e(s) {
-      return String(s == null ? '' : s)
-        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-    }
-    var b = '';
+  // Shared body content (identical for PDF and Word).
+  function cvDocBody() {
+    var c = CONFIG, e = docEsc, b = '';
     b += '<h1>' + e(c.name) + '</h1>';
     b += '<div class="sub">' + e(c.title) + ' &middot; ' + e(c.company) + '</div>';
     var contact = [c.location, c.email, c.linkedin, c.substack].filter(Boolean).map(e).join('&nbsp;&nbsp;|&nbsp;&nbsp;');
@@ -1054,29 +1051,29 @@ document.addEventListener('DOMContentLoaded', function () {
 
     b += '<h2>Experience</h2>';
     (c.experience || []).forEach(function (r) {
-      b += '<div class="role">';
-      b += '<span class="role-title">' + e(r.title) + '</span>';
+      b += '<div class="role"><span class="role-title">' + e(r.title) + '</span>';
       if (r.period) b += '<span class="role-period">' + e(r.period) + '</span>';
-      b += '</div>';
-      b += '<div class="role-co">' + e(r.company) + '</div>';
+      b += '</div><div class="role-co">' + e(r.company) + '</div>';
       if (r.description) b += '<p>' + e(r.description) + '</p>';
-      var bullets = (r.metrics || []);
-      if (bullets.length) {
+      if ((r.metrics || []).length) {
         b += '<ul>';
-        bullets.forEach(function (m) { b += '<li>' + e(m) + '</li>'; });
+        r.metrics.forEach(function (m) { b += '<li>' + e(m) + '</li>'; });
         b += '</ul>';
       }
     });
 
     if (c.education) {
-      b += '<h2>Education</h2>';
-      b += '<p><b>' + e(c.education.degree) + '</b><br>' + e(c.education.university);
+      b += '<h2>Education</h2><p><b>' + e(c.education.degree) + '</b><br>' + e(c.education.university);
       if (c.education.note) b += '<br>' + e(c.education.note);
       b += '</p>';
     }
+    return b;
+  }
 
-    var css =
-      'body{font-family:Calibri,Arial,sans-serif;font-size:10.5pt;color:#222;line-height:1.42}' +
+  // Shared typographic CSS. `pageRule` lets PDF and Word set their own page box.
+  function cvDocCSS(pageRule) {
+    return pageRule +
+      'body{font-family:Calibri,"Segoe UI",Arial,sans-serif;font-size:10.5pt;color:#222;line-height:1.42;margin:0}' +
       'h1{font-size:21pt;margin:0;color:#0F2040;font-weight:700}' +
       '.sub{font-size:11.5pt;color:#444;margin:3pt 0 5pt}' +
       '.contact{font-size:9pt;color:#555;margin-bottom:9pt}' +
@@ -1085,20 +1082,52 @@ document.addEventListener('DOMContentLoaded', function () {
       '.role{margin-top:6pt}.role-title{font-weight:700;font-size:10.5pt}' +
       '.role-period{color:#666;font-size:9pt;float:right}' +
       '.role-co{font-size:9.5pt;color:#555;margin-bottom:3pt}' +
+      '.role,h2,ul{page-break-inside:avoid}' +
       'p{margin:0 0 6pt}ul{margin:3pt 0 6pt 0;padding-left:18pt}li{margin-bottom:2pt}';
-
-    return '<!DOCTYPE html><html xmlns:o="urn:schemas-microsoft-com:office:office" ' +
-      'xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">' +
-      '<head><meta charset="utf-8"><title>' + e(c.name) + ' — CV</title>' +
-      '<!--[if gte mso 9]><xml><w:WordDocument><w:View>Print</w:View>' +
-      '<w:Zoom>100</w:Zoom><w:DoNotOptimizeForBrowser/></w:WordDocument></xml><![endif]-->' +
-      '<style>@page Section1{size:595.3pt 841.9pt;margin:1.5cm 1.7cm}div.Section1{page:Section1}' +
-      css + '</style></head><body><div class="Section1">' + b + '</div></body></html>';
   }
 
+  function buildPrintHTML() {
+    var css = cvDocCSS('@page{size:A4;margin:14mm 16mm}');
+    return '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>' +
+      docEsc(CONFIG.name) + ' — CV</title><style>' + css + '</style></head><body>' +
+      cvDocBody() + '</body></html>';
+  }
+
+  function buildWordHTML() {
+    var css = cvDocCSS('@page Section1{size:595.3pt 841.9pt;margin:1.5cm 1.7cm}div.Section1{page:Section1}');
+    return '<!DOCTYPE html><html xmlns:o="urn:schemas-microsoft-com:office:office" ' +
+      'xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">' +
+      '<head><meta charset="utf-8"><title>' + docEsc(CONFIG.name) + ' — CV</title>' +
+      '<!--[if gte mso 9]><xml><w:WordDocument><w:View>Print</w:View>' +
+      '<w:Zoom>100</w:Zoom><w:DoNotOptimizeForBrowser/></w:WordDocument></xml><![endif]-->' +
+      '<style>' + css + '</style></head><body><div class="Section1">' + cvDocBody() + '</div></body></html>';
+  }
+
+  // PDF: render the clean doc inside an off-screen iframe and print just that
+  // frame, so the styled web page is untouched and the PDF is single-column.
+  if (dlPdf) dlPdf.addEventListener('click', function () {
+    var old = document.getElementById('pdfFrame');
+    if (old) old.remove();
+    var iframe = document.createElement('iframe');
+    iframe.id = 'pdfFrame';
+    iframe.setAttribute('aria-hidden', 'true');
+    iframe.style.cssText = 'position:fixed;right:0;bottom:0;width:0;height:0;border:0;opacity:0';
+    document.body.appendChild(iframe);
+    var d = iframe.contentWindow.document;
+    d.open();
+    d.write(buildPrintHTML());
+    d.close();
+    var win = iframe.contentWindow;
+    var cleanup = function () { setTimeout(function () { if (iframe.parentNode) iframe.parentNode.removeChild(iframe); }, 500); };
+    win.onafterprint = cleanup;
+    setTimeout(function () {
+      try { win.focus(); win.print(); } catch (e) { window.print(); }
+      setTimeout(cleanup, 60000); // fallback cleanup if afterprint never fires
+    }, 350);
+  });
+
   if (dlWord) dlWord.addEventListener('click', function () {
-    var html = buildWordHTML();
-    var blob = new Blob(['﻿', html], { type: 'application/msword' });
+    var blob = new Blob(['﻿', buildWordHTML()], { type: 'application/msword' });
     var url = URL.createObjectURL(blob);
     var a = document.createElement('a');
     a.href = url;
@@ -1464,11 +1493,20 @@ document.addEventListener('DOMContentLoaded', function () {
         mo.observe(ms);
       }
     }, 100);
-    toast('Changes applied');
+    saveDraft();
+    toast('Applied & saved in this browser');
+  });
+
+  var edReset = document.getElementById('edReset');
+  if (edReset) edReset.addEventListener('click', function () {
+    if (!confirm('Discard your local edits and restore the published version? This cannot be undone.')) return;
+    try { localStorage.removeItem(DRAFT_KEY); } catch (e) {}
+    location.reload();
   });
 
   if (edCopyConfig) edCopyConfig.addEventListener('click', function () {
     readFormToConfig();
+    saveDraft();
     var json = JSON.stringify(CONFIG, null, 2);
     var configStr = 'var CONFIG = ' + json + ';';
     if (navigator.clipboard && navigator.clipboard.writeText) {
