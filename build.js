@@ -12,12 +12,31 @@
  */
 const fs = require('fs');
 const path = require('path');
+const { execSync } = require('child_process');
 
 const SRC = path.join(__dirname, 'index.html');
 const OUT_DIR = path.join(__dirname, 'dist');
 const OUT = path.join(OUT_DIR, 'index.html');
 
-const html = fs.readFileSync(SRC, 'utf8');
+// Build/version stamp injected into the footer as "YYYY-MM-DD|<short-sha>".
+// Netlify exposes the deployed commit via COMMIT_REF (HEAD as a fallback);
+// for local builds we read it from git. Lets you confirm at a glance that
+// the live site matches the latest push.
+function shortCommit() {
+  const ref = process.env.COMMIT_REF || process.env.HEAD || '';
+  if (ref) return ref.slice(0, 7);
+  try {
+    return execSync('git rev-parse --short HEAD', { cwd: __dirname }).toString().trim();
+  } catch (e) {
+    return '';
+  }
+}
+const buildDate = new Date().toISOString().slice(0, 10); // YYYY-MM-DD (UTC)
+const commit = shortCommit();
+const stamp = buildDate + '|' + commit;
+
+let html = fs.readFileSync(SRC, 'utf8');
+html = html.split('@@BUILD_STAMP@@').join(stamp);
 
 fs.mkdirSync(OUT_DIR, { recursive: true });
 fs.writeFileSync(OUT, html);
@@ -34,5 +53,5 @@ for (const asset of STATIC_ASSETS) {
 }
 
 const kb = (Buffer.byteLength(html, 'utf8') / 1024).toFixed(1);
-console.log(`Built dist/index.html (${kb}KB)`);
+console.log(`Built dist/index.html (${kb}KB) · stamp ${stamp}`);
 if (copied.length) console.log(`Copied static asset(s): ${copied.join(', ')}`);

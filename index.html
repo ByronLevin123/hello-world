@@ -129,6 +129,7 @@ a:hover{color:var(--navy)}
 
 /* CV FOOTER */
 .cv-footer{text-align:center;font-size:.72rem;color:var(--ink-3);margin-top:2.5rem;padding-top:1.25rem;border-top:1px solid var(--border)}
+.build-stamp{opacity:.7;font-variant-numeric:tabular-nums;letter-spacing:.02em}
 
 /* DOWNLOAD TOOLBAR (public) */
 .cv-downloads{display:flex;justify-content:flex-end;gap:.6rem;margin-bottom:1.5rem;flex-wrap:wrap}
@@ -335,7 +336,7 @@ a:hover{color:var(--navy)}
 @media print{
   @page{size:A4;margin:12mm 14mm}
   *{transition:none!important;animation:none!important}
-  .site-nav,.loom-strip,.cv-pdf-bar,.cv-downloads,.editor-overlay,.editor-scrim,.ed-toast,.skip-link{display:none!important}
+  .site-nav,.loom-strip,.cv-pdf-bar,.cv-downloads,.editor-overlay,.editor-scrim,.ed-toast,.skip-link,.build-stamp{display:none!important}
   .reveal{opacity:1!important;transform:none!important}
   body{background:#fff;line-height:1.4;color:#111}
   .container{max-width:100%;padding:0}
@@ -601,6 +602,17 @@ a:hover{color:var(--navy)}
 </main><!-- /container -->
 
 <script>
+// Build/version stamp — injected by build.js at deploy time as
+// "YYYY-MM-DD|<short-sha>". Left as a placeholder in the source; if the
+// site is opened un-built (raw index.html) it stays a placeholder and the
+// footer simply omits the stamp.
+var BUILD_STAMP = '@@BUILD_STAMP@@';
+function buildInfo() {
+  if (typeof BUILD_STAMP !== 'string' || BUILD_STAMP.indexOf('@@') !== -1) return null;
+  var p = BUILD_STAMP.split('|');
+  return { date: p[0] || '', commit: p[1] || '' };
+}
+
 /* ╔═══════════════════════════════════════════════════════════════════════╗
    ║  CONFIG — Edit your CV content here. Change values, save, refresh.  ║
    ╚═══════════════════════════════════════════════════════════════════════╝ */
@@ -1011,9 +1023,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
     h += '</aside></div>';
 
-    // Footer — last-updated stamp
+    // Footer — last-updated + build/version stamp (date public; commit shown
+    // to the owner, and to everyone on hover via the title tooltip).
     if (c.lastUpdated) {
-      h += '<div class="cv-footer">Updated ' + esc(c.lastUpdated) + '</div>';
+      var bi = buildInfo();
+      h += '<div class="cv-footer">Updated ' + esc(c.lastUpdated);
+      if (bi && bi.date) {
+        var full = 'build ' + bi.date + (bi.commit ? ' · ' + bi.commit : '');
+        var shown = 'build ' + bi.date + (bi.commit && isOwner() ? ' · ' + bi.commit : '');
+        h += ' <span class="build-stamp" title="' + esc(full) + '">· ' + esc(shown) + '</span>';
+      }
+      h += '</div>';
     }
 
     var container = document.getElementById('cv-content');
