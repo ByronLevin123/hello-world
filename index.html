@@ -136,7 +136,9 @@ a:hover{color:var(--navy)}
 .dl-btn:hover{background:var(--navy-light);transform:translateY(-2px)}
 .dl-btn.secondary{background:var(--surface);color:var(--navy)}
 .dl-btn.secondary:hover{background:var(--gold-pale)}
-@media(max-width:480px){.cv-downloads{justify-content:stretch}.dl-btn{flex:1;justify-content:center}}
+.dl-variant{display:inline-flex;align-items:center;gap:.4rem;margin-right:auto;font-family:var(--sans);font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-3)}
+.dl-variant select{font-family:var(--sans);font-size:.8rem;font-weight:600;color:var(--navy);background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.5rem .7rem;cursor:pointer}
+@media(max-width:480px){.cv-downloads{justify-content:stretch}.dl-btn{flex:1;justify-content:center}.dl-variant{margin-right:0;width:100%;justify-content:space-between}.dl-variant select{flex:1;margin-left:.5rem}}
 
 /* STRIP-START */
 /* PDF BUTTON (CV) */
@@ -467,6 +469,15 @@ a:hover{color:var(--navy)}
 
 <!-- Download toolbar (owner-only; revealed in admin mode, hidden on print) -->
 <div class="cv-downloads" id="cvDownloads" hidden>
+<label class="dl-variant" for="variantPicker"><span>Version</span>
+<select id="variantPicker" title="Switch the on-page version, share link and downloads">
+<option value="">Financial Services</option>
+<option value="banking">Banking</option>
+<option value="insurance">Insurance</option>
+<option value="wealth">Wealth</option>
+</select>
+</label>
+<button class="dl-btn secondary" id="copyVariantLink" type="button" title="Copy a shareable link to the version shown above">🔗 Copy link</button>
 <button class="dl-btn" id="dlPdf" type="button">⬇ Download PDF</button>
 <button class="dl-btn secondary" id="dlWord" type="button">⬇ Download Word</button>
 <button class="dl-btn secondary" id="dlPlain" type="button" title="Clean single-column version for application-tracking systems">⬇ Plain (ATS)</button>
@@ -717,7 +728,91 @@ var CONFIG = {
     { region: 'Europe', status: 'Active' },
     { region: 'North America', status: 'Active' },
     { region: 'APAC', status: 'Active' }
-  ]
+  ],
+
+  // ── Role-targeted variants ───────────────────────────────────────────
+  // The default page (no ?v= param) shows the broad Financial Services CV
+  // above. Appending ?v=banking|insurance|wealth renders a vertical cut by
+  // overriding only the fields below; everything else is inherited. The
+  // admin download toolbar exposes a version picker that also updates the
+  // shareable URL.
+  variants: {
+    banking: {
+      label: 'Banking',
+      title: 'Global Head of Solution Sales & Engineering — Banking',
+      chips: [
+        'Revenue & GTM Leadership', 'AI-Powered Banking Transformation',
+        'Lending · Mortgages · Origination', 'Core & Deposits Modernisation',
+        'Digital Onboarding', 'CFA Level II'
+      ],
+      summary: [
+        'Revenue-focused solutions executive helping banks and lenders accelerate growth through AI-powered transformation, modern origination platforms and customer-centric digital journeys.',
+        'Leads global solution sales and engineering across retail, business and specialist banking — lending, mortgages, deposits and digital onboarding — partnering with executive stakeholders (CEO, CRO, CIO, COO, CTO) to shape strategy, influence product direction and deliver complex core- and origination-modernisation programmes. Combines commercial leadership, banking domain depth and applied-AI thinking to drive revenue growth, improve customer outcomes and scale capability across international markets.'
+      ],
+      currentRole: {
+        description: 'Reports to the CRO; leads a global solution sales & engineering function (3 direct, 5 indirect) across UK, Europe, North America and APAC. Owns end-to-end solutioning for enterprise banking pursuits — discovery, value engineering, AI-powered demos/PoCs and commercial proposals across lending, mortgages, deposits and digital onboarding — influencing an annual pipeline of £10M+ and shaping the largest opportunity to date (£12M). Partners with C-suite and product leadership to set origination and core-modernisation strategy and roadmap, and built the team\'s AI-powered demo-factory and value-engineering operating model.',
+        tags: ['Revenue & GTM Leadership', 'Lending & Mortgages', 'Loan Origination', 'Core & Deposits', 'Digital Onboarding', 'AI-Powered Transformation', 'Value Engineering', 'Banking']
+      },
+      skillLabels: ['Revenue & Commercial Leadership', 'Solutions, Product & AI', 'Banking Domain & Global Delivery'],
+      skillsTechnical: [
+        'Lending · Mortgages · Origination',
+        'Core Banking & Deposits',
+        'Digital Onboarding & KYC/KYB',
+        'Payments & Bureau Integration',
+        'Global Team Leadership & Enablement'
+      ]
+    },
+    insurance: {
+      label: 'Insurance',
+      title: 'Global Head of Solution Sales & Engineering — Insurance',
+      chips: [
+        'Revenue & GTM Leadership', 'AI-Powered Insurance Transformation',
+        'Underwriting & Pricing', 'Policy Admin & Claims',
+        'Embedded & Digital Distribution', 'CFA Level II'
+      ],
+      summary: [
+        'Revenue-focused solutions executive helping insurers and MGAs accelerate growth through AI-powered transformation, modern policy and claims platforms and customer-centric distribution.',
+        'Leads global solution sales and engineering across life, general and specialty insurance — underwriting, policy administration, claims and embedded distribution — partnering with executive stakeholders (CEO, CRO, CIO, COO, CTO) to shape strategy, influence product direction and deliver complex transformation programmes. Combines commercial leadership, insurance domain depth and applied-AI thinking to drive revenue growth, improve customer outcomes and scale capability across international markets.'
+      ],
+      currentRole: {
+        description: 'Reports to the CRO; leads a global solution sales & engineering function (3 direct, 5 indirect) across UK, Europe, North America and APAC. Owns end-to-end solutioning for enterprise insurance pursuits — discovery, value engineering, AI-powered demos/PoCs and commercial proposals across underwriting, policy administration, claims and embedded distribution — influencing an annual pipeline of £10M+ and shaping the largest opportunity to date (£12M). Partners with C-suite and product leadership to set transformation strategy and roadmap, and built the team\'s AI-powered demo-factory and value-engineering operating model.',
+        tags: ['Revenue & GTM Leadership', 'Underwriting & Pricing', 'Policy Administration', 'Claims Automation', 'Embedded Insurance', 'AI-Powered Transformation', 'Value Engineering', 'Insurance']
+      },
+      skillLabels: ['Revenue & Commercial Leadership', 'Solutions, Product & AI', 'Insurance Domain & Global Delivery'],
+      skillsTechnical: [
+        'Underwriting & Pricing',
+        'Policy Administration',
+        'Claims Automation',
+        'Embedded & Digital Distribution',
+        'Global Team Leadership & Enablement'
+      ]
+    },
+    wealth: {
+      label: 'Wealth',
+      title: 'Global Head of Solution Sales & Engineering — Wealth & Asset Management',
+      chips: [
+        'Revenue & GTM Leadership', 'AI-Powered Wealth Transformation',
+        'Advisory & Digital Platforms', 'Onboarding & Suitability',
+        'Portfolio & Asset Servicing', 'CFA Level II'
+      ],
+      summary: [
+        'Revenue-focused solutions executive helping wealth and asset managers accelerate growth through AI-powered transformation, modern advisory platforms and customer-centric digital experiences.',
+        'Leads global solution sales and engineering across wealth and asset management — advisory platforms, client onboarding, portfolio management and asset servicing — partnering with executive stakeholders (CEO, CRO, CIO, COO, CTO) to shape strategy, influence product direction and deliver complex transformation programmes. Combines commercial leadership, wealth domain depth and applied-AI thinking to drive revenue growth, improve client outcomes and scale capability across international markets.'
+      ],
+      currentRole: {
+        description: 'Reports to the CRO; leads a global solution sales & engineering function (3 direct, 5 indirect) across UK, Europe, North America and APAC. Owns end-to-end solutioning for enterprise wealth and asset-management pursuits — discovery, value engineering, AI-powered demos/PoCs and commercial proposals across advisory platforms, client onboarding, portfolio management and asset servicing — influencing an annual pipeline of £10M+ and shaping the largest opportunity to date (£12M). Partners with C-suite and product leadership to set transformation strategy and roadmap, and built the team\'s AI-powered demo-factory and value-engineering operating model.',
+        tags: ['Revenue & GTM Leadership', 'Wealth Platforms', 'Client Onboarding', 'Portfolio Management', 'Asset Servicing', 'AI-Powered Transformation', 'Value Engineering', 'Wealth']
+      },
+      skillLabels: ['Revenue & Commercial Leadership', 'Solutions, Product & AI', 'Wealth Domain & Global Delivery'],
+      skillsTechnical: [
+        'Advisory & Digital Wealth Platforms',
+        'Client Onboarding & Suitability',
+        'Portfolio & Order Management',
+        'Asset Servicing & Custody Integration',
+        'Global Team Leadership & Enablement'
+      ]
+    }
+  }
 };
 /* ═══════════════════ END CONFIG ═══════════════════ */
 
@@ -768,8 +863,11 @@ document.addEventListener('DOMContentLoaded', function () {
   function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
 
   function renderCV() {
-    var c = CONFIG;
+    var c = (typeof VIEWCFG !== 'undefined' && VIEWCFG) ? VIEWCFG : CONFIG;
     var h = '';
+
+    // Keep the browser tab title in sync with the active variant.
+    try { document.title = c.name + ' — ' + c.title; } catch (e) {}
 
     // Header
     h += '<header class="cv-header reveal">';
@@ -816,10 +914,11 @@ document.addEventListener('DOMContentLoaded', function () {
     h += '<div class="cv-body"><div class="cv-main">';
 
     // Core Skills — 3-column card grid, above experience
+    var skLabels = c.skillLabels || ['Revenue & Commercial Leadership', 'Solutions, Product & AI', 'Financial Services & Global Delivery'];
     var skillGroups = [
-      { label: 'Revenue & Commercial Leadership', icon: '📈', items: c.skillsStrategic  || [] },
-      { label: 'Solutions, Product & AI',         icon: '🤖', items: c.skillsCommercial || [] },
-      { label: 'Financial Services & Global Delivery', icon: '🌍', items: c.skillsTechnical  || [] }
+      { label: skLabels[0], icon: '📈', items: c.skillsStrategic  || [] },
+      { label: skLabels[1], icon: '🤖', items: c.skillsCommercial || [] },
+      { label: skLabels[2], icon: '🌍', items: c.skillsTechnical  || [] }
     ].filter(function (g) { return g.items.length; });
     if (skillGroups.length) {
       h += '<section class="skills-cards-section reveal">';
@@ -942,8 +1041,54 @@ document.addEventListener('DOMContentLoaded', function () {
     try { localStorage.setItem(DRAFT_KEY, JSON.stringify(CONFIG)); } catch (e) {}
   }
 
+  // ── Role-targeted variants ──
+  // Reads ?v=banking|insurance|wealth and merges that variant's overrides
+  // onto the base (Financial Services) CONFIG. Public visitors get the
+  // variant straight from the shared link; the admin toolbar can switch it.
+  function getVariantId() {
+    var m = location.search.match(/[?&]v=([a-z]+)/i);
+    var id = m ? m[1].toLowerCase() : '';
+    return (CONFIG.variants && CONFIG.variants[id]) ? id : '';
+  }
+  function resolveConfig(id) {
+    var cfg = Object.assign({}, CONFIG);
+    var v = id && CONFIG.variants ? CONFIG.variants[id] : null;
+    cfg.variantId = v ? id : '';
+    cfg.variantLabel = v ? (v.label || id) : 'Financial Services';
+    if (!v) return cfg;
+    ['title', 'chips', 'summary', 'metrics', 'leadershipHighlights',
+     'skillsStrategic', 'skillsCommercial', 'skillsTechnical', 'skillLabels',
+     'markets'].forEach(function (k) { if (v[k] != null) cfg[k] = v[k]; });
+    if (v.currentRole && CONFIG.experience && CONFIG.experience.length) {
+      cfg.experience = CONFIG.experience.slice();
+      cfg.experience[0] = Object.assign({}, CONFIG.experience[0], v.currentRole);
+    }
+    return cfg;
+  }
+  var activeVariant = getVariantId();
+  var VIEWCFG = resolveConfig(activeVariant);
+
   loadDraft();
+  VIEWCFG = resolveConfig(activeVariant);
   renderCV();
+
+  // Re-resolve the active variant and re-render (used by the version picker
+  // and the editor's Apply), re-arming reveal + metric animations.
+  function rerenderCV() {
+    VIEWCFG = resolveConfig(activeVariant);
+    renderCV();
+    metricsAnimated = false;
+    initReveals();
+    setTimeout(function () {
+      var ms = document.querySelector('.metrics-strip');
+      if (ms && 'IntersectionObserver' in window) {
+        var mo = new IntersectionObserver(function (e) {
+          if (e[0].isIntersecting) { animateMetrics(); mo.disconnect(); }
+        }, { threshold: 0.3 });
+        mo.observe(ms);
+      }
+    }, 100);
+  }
 
   // ── Scroll reveal (IntersectionObserver) ──
   var observer;
@@ -1100,8 +1245,8 @@ document.addEventListener('DOMContentLoaded', function () {
   // Uses tables (reliable in Word) for the metrics row and the two-column body,
   // and light-background / dark-text "chips" so they stay legible even if a
   // Word build drops cell shading.
-  function buildWordHTML() {
-    var c = CONFIG, e = docEsc;
+  function buildWordHTML(cfg) {
+    var c = cfg || VIEWCFG || CONFIG, e = docEsc;
     var NAVY = '#0F2040', GOLD = '#C4A35A', GOLDP = '#F9F4EA', INK = '#222',
         INK2 = '#555', INK3 = '#777', BORDER = '#E5E0D8',
         GREEN = '#1D6030', GREENBG = '#EDFAED', BLUEBG = '#EEF3FB', BLUET = '#234E80';
@@ -1250,8 +1395,8 @@ document.addEventListener('DOMContentLoaded', function () {
   // Plain, ATS-friendly Word doc: single column, no colour/tables/chips, real
   // headings + bullet lists so application-tracking parsers read it cleanly.
   // Includes the same content as the site, flattened to text.
-  function buildPlainHTML() {
-    var c = CONFIG, e = docEsc, b = '';
+  function buildPlainHTML(cfg) {
+    var c = cfg || VIEWCFG || CONFIG, e = docEsc, b = '';
     b += '<h1>' + e(c.name) + '</h1>';
     b += '<p class="role">' + e(c.title) + ' — ' + e(c.company) + '</p>';
     var contact = [c.location, c.email, c.linkedin, c.substack].filter(Boolean).map(e).join('  |  ');
@@ -1329,8 +1474,43 @@ document.addEventListener('DOMContentLoaded', function () {
     setTimeout(function () { URL.revokeObjectURL(url); }, 1500);
   }
 
-  if (dlWord) dlWord.addEventListener('click', function () { downloadDoc(buildWordHTML(), '_CV'); });
-  if (dlPlain) dlPlain.addEventListener('click', function () { downloadDoc(buildPlainHTML(), '_CV_ATS'); });
+  // Prefix the filename with the active variant so exports don't collide,
+  // e.g. Byron_Levin_Banking_CV.doc.
+  function docSuffix(base) {
+    return (VIEWCFG && VIEWCFG.variantId ? '_' + VIEWCFG.variantLabel.replace(/\s+/g, '_') : '') + base;
+  }
+
+  if (dlWord) dlWord.addEventListener('click', function () { downloadDoc(buildWordHTML(VIEWCFG), docSuffix('_CV')); });
+  if (dlPlain) dlPlain.addEventListener('click', function () { downloadDoc(buildPlainHTML(VIEWCFG), docSuffix('_CV_ATS')); });
+
+  // Version picker (admin toolbar): switches the on-page version, keeps the
+  // URL in sync so the link is shareable, and retargets the downloads.
+  function shareUrl() {
+    var u = new URL(location.href);
+    if (activeVariant) u.searchParams.set('v', activeVariant); else u.searchParams.delete('v');
+    u.searchParams.delete('admin'); // never leak the admin token in a shared link
+    return u.toString();
+  }
+  var variantPicker = document.getElementById('variantPicker');
+  if (variantPicker) {
+    variantPicker.value = activeVariant;
+    variantPicker.addEventListener('change', function () {
+      activeVariant = variantPicker.value;
+      history.replaceState(null, '', shareUrl());
+      rerenderCV();
+      toast('Showing ' + VIEWCFG.variantLabel + ' version');
+    });
+  }
+  var copyVariantLink = document.getElementById('copyVariantLink');
+  if (copyVariantLink) copyVariantLink.addEventListener('click', function () {
+    var link = shareUrl();
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(link).then(
+        function () { toast('Share link copied: ' + VIEWCFG.variantLabel); },
+        function () { window.prompt('Copy this link:', link); }
+      );
+    } else { window.prompt('Copy this link:', link); }
+  });
 
   /* STRIP-START */
   // ── Editor Panel ──
@@ -1675,18 +1855,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   if (edApply) edApply.addEventListener('click', function () {
     readFormToConfig();
-    renderCV();
-    metricsAnimated = false;
-    initReveals();
-    setTimeout(function () {
-      var ms = document.querySelector('.metrics-strip');
-      if (ms && 'IntersectionObserver' in window) {
-        var mo = new IntersectionObserver(function (e) {
-          if (e[0].isIntersecting) { animateMetrics(); mo.disconnect(); }
-        }, { threshold: 0.3 });
-        mo.observe(ms);
-      }
-    }, 100);
+    rerenderCV();
     saveDraft();
     toast('Applied & saved in this browser');
   });
